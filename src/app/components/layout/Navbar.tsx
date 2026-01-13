@@ -25,11 +25,11 @@ import { ProfileDropdown } from "../UIComponents/ProfileDropdown";
 import DeleteCustomerModal from "../AppComponents/DeleteCustomerModal";
 
 const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Program", href: "/Program" },
+  { label: "BUY ESIM", href: "/" },
+  { label: "MANAGE ACCOUNT", href: "/Program" },
   { label: "Support", href: "/support" },
-  { label: "About", href: "/About" },
-  { label: "Contact", href: "/Contact" },
+  // { label: "About", href: "/About" },
+  // { label: "Contact", href: "/Contact" },
 ];
 
 export const Navbar: React.FC = () => {
@@ -257,8 +257,8 @@ export const Navbar: React.FC = () => {
             <Image
               src="/images/logo.png"
               alt="Logo"
-              width={257}
-              height={37}
+              width={200}
+              height={12}
               className="object-contain"
               priority
             />
@@ -278,7 +278,11 @@ export const Navbar: React.FC = () => {
           {/* Right Buttons */}
           <div className="hidden md:flex items-center gap-4">
             {!isLoggedIn ? (
-              <Button variant="gradient" onClick={handleLogin}>
+              <Button
+                variant="gradient"
+                className="bg-black text-white hover:bg-gray-900"
+                onClick={handleLogin}
+              >
                 Login
               </Button>
             ) : (
@@ -376,7 +380,7 @@ export const Navbar: React.FC = () => {
                   {!isLoggedIn ? (
                     <Button
                       variant="gradient"
-                      className="w-full text-lg py-6 font-semibold"
+                      className="w-full text-lg py-6 font-semibold bg-black text-white hover:bg-gray-900"
                       onClick={() => {
                         handleLogin();
                         setIsOpen(false);

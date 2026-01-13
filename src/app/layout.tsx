@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en" className={poppins.variable}>
       <body className="flex flex-col min-h-screen">
         <ReduxProvider>
-          {/* <Navbar /> */}
+          <Navbar />
           <main className="grow">{children}</main>
           {/* <Footer /> */}
           {/* <FloatingChatButton /> */}
