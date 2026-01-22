@@ -4,6 +4,8 @@ import Small from "./components/AppComponents/Small";
 import Hero from "./components/AppComponents/Hero";
 import HowItWorks from "./components/AppComponents/Works";
 import Banner from "./components/AppComponents/Banner";
+// import JustMobile from "./components/AppComponents/JustMobile";
+import JustMobile from "./components/AppComponents/JustMobile";
 export default function Home() {
   return (
     <div className="">
@@ -34,10 +36,15 @@ export default function Home() {
           {
             number: "4",
             title: "Your phone will do the rest",
-          }
+          },
         ]}
       />
       <Small />
+      <JustMobile
+        title="How It Works"
+        circleImage="/images/bg.png" // Add your circle background image
+        screenImage="/images/bannerscreen.png"
+      />
       <Banner
         title="JUSTmobile uses the Telstra Wholesale Mobile Network."
         ctaText="Get Started"
