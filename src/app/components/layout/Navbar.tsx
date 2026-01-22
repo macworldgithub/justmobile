@@ -119,19 +119,19 @@ export const Navbar: React.FC = () => {
               Authorization: `Bearer ${token}`,
               accept: "application/json",
             },
-          }
+          },
         ),
         fetch(
           `https://bele.omnisuiteai.com/api/v1/customers/${custNo}/balance/mobile?lineSeqNo=1`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         ),
         fetch(
           `https://bele.omnisuiteai.com/api/v1/customers/${custNo}/unbilled-summary`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         ),
       ]);
 
@@ -144,7 +144,7 @@ export const Navbar: React.FC = () => {
         !serviceData.data?.services?.serviceDetails?.length
       ) {
         setUsageError(
-          "You don't have an active plan yet. Please choose a plan first!"
+          "You don't have an active plan yet. Please choose a plan first!",
         );
         setUsageLoading(false);
         return;
@@ -408,7 +408,7 @@ export const Navbar: React.FC = () => {
       </header>
 
       {/* Check Usage Modal */}
-  
+
       <AnimatePresence>
         {showUsageModal && (
           <motion.div
@@ -478,8 +478,8 @@ export const Navbar: React.FC = () => {
               {usageData && (
                 <div className="space-y-6 md:space-y-8">
                   {/* Current Plan Section */}
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-6 sm:p-7 md:p-8 border-2 border-blue-200">
-                    <h3 className="text-lg sm:text-xl font-bold mb-4 text-indigo-800">
+                  <div className="bg-[#919191]  rounded-3xl p-6 sm:p-7 md:p-8 border-2 border-[#231e20]">
+                    <h3 className="text-lg sm:text-xl font-bold mb-4 text-[#231e20]">
                       Current Plan
                     </h3>
                     <div className="space-y-2 sm:space-y-3 text-gray-700 text-base sm:text-lg">
@@ -499,7 +499,7 @@ export const Navbar: React.FC = () => {
                   </div>
 
                   {/* Data Usage Section */}
-                  <div className="from-emerald-50 to-green-50 rounded-3xl p-6 sm:p-7 md:p-8 border-2 border-emerald-300">
+                  <div className="from-emerald-50 to-green-50 rounded-3xl p-6 sm:p-7 md:p-8 border-2 border-gray-400">
                     <h3 className="text-xl sm:text-2xl font-bold mb-6 text-gray-800">
                       Data Usage
                     </h3>
@@ -572,11 +572,11 @@ export const Navbar: React.FC = () => {
 
                   {/* Unbilled Amount */}
                   {usageData.unbilled && (
-                    <div className="bg-orange-50 rounded-3xl p-6 sm:p-8 border-2 border-orange-300 text-center">
+                    <div className="bg-neutral-300 rounded-3xl p-6 sm:p-8 border-2 border-amber-700 text-center">
                       <p className="text-base sm:text-xl text-gray-700 mb-2">
                         Current Unbilled Amount
                       </p>
-                      <p className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-600">
+                      <p className="text-xl sm:text-2xl md:text-3xl font-bold text-amber-800">
                         ${parseFloat(usageData.unbilled.totalCharge).toFixed(2)}
                       </p>
                     </div>

@@ -13,11 +13,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500",
+          "bg-[#231e20] text-white hover:bg-[#231e20] focus-visible:ring-blue-500",
         outline:
-          "border border-gray-300 bg-white text-gray-800 hover:bg-blue-100 focus-visible:ring-gray-400",
+          "border border-gray-300 bg-white text-gray-800 hover:bg-[#919191] focus-visible:ring-gray-400",
         ghost:
-          "text-gray-800 hover:bg-gray-100 focus-visible:ring-gray-300 dark:text-white dark:hover:bg-gray-800",
+          "text-gray-800 hover:bg-gray-100 focus-visible:ring-gray-300 dark:text-white dark:hover:bg-[#231e20]",
         gradient:
           "bg-gradient-to-r from-[#13AFF0] to-[#EB0FB6] text-white hover:opacity-90 focus-visible:ring-pink-400",
         destructive:
@@ -39,11 +39,12 @@ const buttonVariants = cva(
       size: "md",
       fullWidth: false,
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends Omit<HTMLMotionProps<"button">, "ref" | "children">,
+  extends
+    Omit<HTMLMotionProps<"button">, "ref" | "children">,
     VariantProps<typeof buttonVariants> {
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -85,7 +86,7 @@ export const Button: React.FC<ButtonProps> = ({
             leftIcon as React.ReactElement<{ className?: string }>,
             {
               className: "h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6",
-            }
+            },
           )}
         </span>
       )
@@ -99,7 +100,7 @@ export const Button: React.FC<ButtonProps> = ({
           rightIcon as React.ReactElement<{ className?: string }>,
           {
             className: "h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6",
-          }
+          },
         )}
       </span>
     )}
