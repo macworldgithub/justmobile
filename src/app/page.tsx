@@ -41,9 +41,8 @@ export default function Home() {
       />
       <Small />
       <JustMobile
-        title="How It Works"
-        circleImage="/images/bg.png" // Add your circle background image
-        screenImage="/images/bannerscreen.png"
+       
+       
       />
       <Banner
         title="JUSTmobile uses the Telstra Wholesale Mobile Network."

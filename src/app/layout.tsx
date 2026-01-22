@@ -30,7 +30,7 @@ export default function RootLayout({
           <Navbar />
           <main className="grow">{children}</main>
           {/* <Footer /> */}
-          {/* <FloatingChatButton /> */}
+          <FloatingChatButton />
         </ReduxProvider>
       </body>
     </html>
