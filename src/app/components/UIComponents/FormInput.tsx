@@ -38,9 +38,9 @@ export const FormInput: React.FC<FormInputProps> = ({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className={cn(
-          "peer h-11 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100",
+          "peer h-11 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none transition-all focus:border-[#3e3d3d] focus:ring-2 focus:ring-[#3e3d3d]",
           icon && "pl-9",
-          className
+          className,
         )}
       />
 
@@ -49,7 +49,7 @@ export const FormInput: React.FC<FormInputProps> = ({
           y: focused || hasValue ? -22 : -4,
           x: icon ? 24 : 12,
           scale: focused || hasValue ? 0.85 : 1,
-          color: focused ? "#2563eb" : "#6b7280",
+          color: focused ? "#3e3d3d" : "#6b7280",
         }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className="absolute left-2 top-1/2 -translate-y-1/2 bg-white px-1 text-sm pointer-events-none"
