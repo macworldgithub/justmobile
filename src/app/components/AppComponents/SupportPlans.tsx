@@ -88,7 +88,7 @@ export default function SupportPlans() {
     );
 
   return (
-    <section className="py-20 px-4 bg-white text-center w-[80%] mx-auto">
+    <section className="py-20 px-4 bg-white text-center w-[95%] mx-auto">
       <Heading
         title="Choose Your Plan"
         subtitle="All plans powered by JUSTmobile.ai with a portion supporting Flying Kiwi"
@@ -134,7 +134,7 @@ export default function SupportPlans() {
                 variant={plan.network === "5G" ? "gradient" : "outline"}
                 size="md"
                 fullWidth
-                className="mt-4 mb-6"
+                className="mt-4 mb-6 px-4 rounded-full"
               >
                 Choose This Plan
               </Button>

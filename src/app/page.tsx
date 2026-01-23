@@ -47,7 +47,7 @@ export default function Home() {
           },
         ]}
       />
-      <Small />
+      {/* <Small /> */}
       <SupportPlans />
       <JustMobile
         title="How It Works"
