@@ -1704,7 +1704,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
                 <button
                   onClick={sendMessage}
                   disabled={loading}
-                  className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-linear-to-r from-blue-600 to-teal-500 text-white hover:opacity-90 disabled:opacity-50"
+                  className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-linear-to-r from-[#FFFFFF] to-[#231F20]text-white hover:opacity-90 disabled:opacity-50"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
