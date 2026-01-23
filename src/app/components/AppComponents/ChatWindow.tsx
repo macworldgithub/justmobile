@@ -387,8 +387,8 @@ const ChatWindow = () => {
 
   const callAPI = async (text: string) => {
     const payload = sessionId
-      ? { query: text, session_id: sessionId, brand: "flying-kiwi" }
-      : { query: text, brand: "flying-kiwi" };
+      ? { query: text, session_id: sessionId, brand: "Just mobile" }
+      : { query: text, brand: "Just mobile" };
 
     try {
       const res = await fetch("/api", {
@@ -891,7 +891,7 @@ const ChatWindow = () => {
       if (!res.ok) throw new Error("Activation failed");
       const receiptNumber = data?.data?.orderId || "";
 
-      const activationMessage = `Great news... your eSIM has been created with flying-kiwi.
+      const activationMessage = `Great news... your eSIM has been created with Just mobile.
 
 Here is your receipt number: ${receiptNumber}.
 Take a copy of it now, but you will also be getting an email of it.
@@ -1022,7 +1022,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
         </div>
 
         {/* Chat body */}
-        <div className="flex flex-col bg-linear-to-b from-[#A9D7F1]/30 via-[#F9F4F8]/40 to-[#F8CFF3]/30 px-3 sm:px-6 py-4 sm:py-6 overflow-y-auto scroll-smooth">
+        <div className="flex flex-col  px-3 sm:px-6 py-4 sm:py-6 overflow-y-auto scroll-smooth">
           <div className="text-center mb-4 sm:mb-6 mt-2 sm:mt-4">
             <h2 className="text-[#ffffff] font-semibold text-base sm:text-lg mb-1 drop-shadow-sm">
               How can I help you today?
@@ -1079,7 +1079,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
 
               <div className="bg-white rounded-2xl px-4 py-2 shadow-md max-w-[90%] sm:max-w-[80%] md:max-w-[70%]">
                 <p className="text-[#0E3B5C] text-xs sm:text-sm font-medium">
-                  Flying Kiwi Assistant
+                  Just mobiles Assistant
                 </p>
                 <p className="text-[#0E3B5C] text-xs sm:text-sm leading-relaxed">
                   Choose and option below{typingDots}
@@ -1098,7 +1098,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
                   onClick={() =>
                     handleInitialOptionSelect("Buy an eSIM / Physical SIM")
                   }
-                  className="bg-linear-to-r from-blue-600 to-teal-500 text-white px-4 py-3 rounded-lg hover:opacity-90 transition-opacity text-sm sm:text-base font-medium"
+                  className="bg-[#919191] to-[#231e20]  text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
                 >
                   Buy an eSIM / Physical SIM
                 </button>
@@ -1108,13 +1108,13 @@ No worries — you can try again or choose one of the options below, and I’ll 
                       "Account, billing or Technical Problem",
                     )
                   }
-                  className="bg-linear-to-r from-blue-600 to-teal-500 text-white px-4 py-3 rounded-lg hover:opacity-90 transition-opacity text-sm sm:text-base font-medium"
+                  className="bg-[#919191] to-[#231e20] text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
                 >
                   Account, billing or Technical Problem
                 </button>
                 <button
                   onClick={() => handleInitialOptionSelect("transfer-number")}
-                  className="bg-linear-to-r from-blue-600 to-teal-500 text-white px-4 py-3 rounded-lg hover:opacity-90 transition-opacity text-sm sm:text-base font-medium"
+                  className="bg-[#919191] to-[#231e20] text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
                 >
                   Transfer my Number
                 </button>
@@ -1449,7 +1449,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
                   className={`mt-3 sm:mt-4 w-full py-3 rounded text-white font-semibold transition-opacity ${
                     ageError
                       ? "bg-gray-500 cursor-not-allowed"
-                      : "bg-gray-800 hover:opacity-90"
+                      : "bg-[#919191] to-[#231e20] hover:opacity-70"
                   }`}
                 >
                   {loading ? "Submitting..." : "Submit Details"}
