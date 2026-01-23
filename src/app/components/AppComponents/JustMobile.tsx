@@ -1,7 +1,17 @@
 import React from "react";
 import Image from "next/image";
 
-const JustMobileSection = () => {
+interface JustMobileProps {
+  title?: string;
+  circleImage?: string;
+  screenImage?: string;
+}
+
+const JustMobileSection: React.FC<JustMobileProps> = ({
+  title,
+  circleImage,
+  screenImage,
+}) => {
   const features = [
     {
       text: "The Telstra Wholesale Mobile Network reaches at least 98.7% of the Australian population and at least 75% with 5G.",
@@ -57,7 +67,7 @@ const JustMobileSection = () => {
     <div className="relative bg-[#F8F9FB] py-16 md:py-24 overflow-hidden hidden md:block">
       <div className="text-center mb-12">
         <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900">
-          Small Plans
+          {title || "Small Plans"}
         </h2>
       </div>
       <div className="relative w-full max-w-[540px] md:max-w-[760px] lg:max-w-[840px] mx-auto aspect-square">
@@ -65,7 +75,7 @@ const JustMobileSection = () => {
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <div className="relative w-[70%] sm:w-[64%] md:w-[58%] lg:w-[54%]">
             <Image
-              src="/images/bannerscreen.png"
+              src={screenImage || "/images/bannerscreen.png"}
               alt="JUST mobile app screen"
               width={600}
               height={1200}

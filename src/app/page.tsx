@@ -1,12 +1,18 @@
+"use client";
+
 import { Heading } from "./components/UIComponents/Heading";
 import Small from "./components/AppComponents/Small";
-
 import Hero from "./components/AppComponents/Hero";
 import HowItWorks from "./components/AppComponents/Works";
 import Banner from "./components/AppComponents/Banner";
-// import JustMobile from "./components/AppComponents/JustMobile";
 import JustMobile from "./components/AppComponents/JustMobile";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+  const router = useRouter();
+  const handleSwitchToEsim = () => {
+    router.push("/chat-window?fromBanner=true");
+  };
   return (
     <div className="">
       <Hero
@@ -15,6 +21,7 @@ export default function Home() {
         ctaText="Get Your eSIM"
         userCount="2M+ People has joined us"
         imageSrc="/images/hero-phone.png"
+        onButtonClick={handleSwitchToEsim}
       />
       <HowItWorks
         title="How It Works"
@@ -42,14 +49,14 @@ export default function Home() {
       <Small />
       <JustMobile
         title="How It Works"
-        circleImage="/images/bg.png" // Add your circle background image
+        circleImage="/images/bg.png"
         screenImage="/images/bannerscreen.png"
       />
       <Banner
         title="JUSTmobile uses the Telstra Wholesale Mobile Network."
         ctaText="Get Started"
-        appStoreLink="https://apps.apple.com/au/app/just-mobile/id1234567890" // Replace with your actual App Store link
-        googlePlayLink="https://play.google.com/store/apps/details?id=com.justmobile.app" // Replace with your actual Google Play link
+        appStoreLink="https://apps.apple.com/au/app/just-mobile/id1234567890"
+        googlePlayLink="https://play.google.com/store/apps/details?id=com.justmobile.app"
       />
     </div>
   );

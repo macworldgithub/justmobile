@@ -25,18 +25,25 @@ import { ProfileDropdown } from "../UIComponents/ProfileDropdown";
 import DeleteCustomerModal from "../AppComponents/DeleteCustomerModal";
 
 const NAV_LINKS = [
-  { label: "BUY ESIM", href: "/" },
+  { label: "BUY ESIM", href: "/chat-window?fromBanner=true" },
   { label: "MANAGE ACCOUNT", href: "/Program" },
   { label: "Support", href: "/support" },
   // { label: "About", href: "/About" },
   // { label: "Contact", href: "/Contact" },
 ];
 
+interface AllowanceItem {
+  unitCode?: string;
+  accountDesc?: string;
+  creditValue?: number;
+  expDate?: string;
+}
+
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showChangePin, setShowChangePin] = useState(false);
-  const [showUsageModal, setShowUsageModal] = useState(false); // ← NEW: Usage Modal
+  const [showUsageModal, setShowUsageModal] = useState(false);
   const [usageLoading, setUsageLoading] = useState(false);
   const [usageError, setUsageError] = useState("");
   const [usageData, setUsageData] = useState<any>(null);
@@ -65,10 +72,12 @@ export const Navbar: React.FC = () => {
     return name || "N/A";
   };
 
-  const getPlanDataFromAllowances = (allowances: any[]) => {
+  const getPlanDataFromAllowances = (
+    allowances: AllowanceItem[] | null | undefined,
+  ) => {
     if (!allowances || allowances.length === 0) return null;
 
-    for (let item of allowances) {
+    for (const item of allowances) {
       if (item.unitCode === "Data" && item.accountDesc?.includes("Plan")) {
         const match = item.accountDesc.match(/(\d+)GB/);
         if (match) {
@@ -92,7 +101,9 @@ export const Navbar: React.FC = () => {
     return null;
   };
 
-  const getTotalRemainingDataGB = (allowances: any[]) => {
+  const getTotalRemainingDataGB = (
+    allowances: AllowanceItem[] | null | undefined,
+  ) => {
     if (!allowances) return "0.00";
     const totalBytes = allowances
       .filter((i) => i.unitCode === "Data")
