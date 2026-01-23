@@ -963,7 +963,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
 
     setChat((prev) => [...prev, userMsg]);
 
-    if (option === "Buy an eSIM / Physical SIM") {
+    if (option === "Buy an eSIM") {
       await handleSend("signup");
     } else if (option === "Account, billing or Technical Problem") {
       setIsTypingEnabled(true);
@@ -1095,12 +1095,10 @@ No worries — you can try again or choose one of the options below, and I’ll 
               </p> */}
               <div className="flex flex-col gap-2">
                 <button
-                  onClick={() =>
-                    handleInitialOptionSelect("Buy an eSIM / Physical SIM")
-                  }
+                  onClick={() => handleInitialOptionSelect("Buy an eSIM")}
                   className="bg-[#919191] to-[#231e20]  text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
                 >
-                  Buy an eSIM / Physical SIM
+                  Buy an eSIM
                 </button>
                 <button
                   onClick={() =>

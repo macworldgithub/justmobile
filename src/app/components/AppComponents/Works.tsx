@@ -4,6 +4,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 interface HowItWorksProps {
   title: string;
@@ -21,6 +22,10 @@ const HowItWorks: React.FC<HowItWorksProps> = ({
   circleImage,
   screenImage,
 }) => {
+  const router = useRouter();
+  const handleSwitchToEsim = () => {
+    router.push("/chat-window?fromBanner=true");
+  };
   return (
     <section className="relative py-16 md:py-24 bg-white ">
       <div className="container w-[80%] mx-auto  px-4">
@@ -83,7 +88,10 @@ const HowItWorks: React.FC<HowItWorksProps> = ({
             </p>
 
             {/* CTA */}
-            <button className="bg-black text-white px-6 py-3 rounded-lg text-sm hover:bg-gray-900 transition">
+            <button
+              className="bg-black text-white px-6 py-3 rounded-lg text-sm hover:bg-gray-900 transition"
+              onClick={handleSwitchToEsim}
+            >
               Get Your Esim
             </button>
           </div>

@@ -17,9 +17,9 @@ const buttonVariants = cva(
         outline:
           "border border-gray-300 bg-white text-gray-800 hover:bg-[#919191] focus-visible:ring-gray-400",
         ghost:
-          "text-gray-800 hover:bg-gray-100 focus-visible:ring-gray-300 dark:text-white dark:hover:bg-[#231e20]",
+          "text-gray-800 hover:bg-gray-100 focus-visible:ring-gray-300 dark:text-white dark:hover:bg-gray-800",
         gradient:
-          "bg-gradient-to-r from-[#13AFF0] to-[#EB0FB6] text-white hover:opacity-90 focus-visible:ring-pink-400",
+          "bg-[#1a283b] text-white hover:opacity-90 focus-visible:ring-pink-400",
         destructive:
           "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500",
       },

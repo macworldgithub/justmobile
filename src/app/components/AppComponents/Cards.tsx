@@ -34,9 +34,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
     >
       <span
         className={`inline-block mb-3 px-4 py-1 text-xs font-medium rounded-full ${
-          highlight
-            ? "bg-[#1a283b] text-white"
-            : "bg-[#1a283b] text-white"
+          highlight ? "bg-[#1a283b] text-white" : "bg-[#1a283b] text-white"
         }`}
       >
         {title}
@@ -61,9 +59,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
       </button>
 
       <div className="mt-6 text-left">
-        <p className="text-sm font-medium mb-3 opacity-80">
-          Features include:
-        </p>
+        <p className="text-sm font-medium mb-3 opacity-80">Features include:</p>
         <ul className="space-y-2 text-sm opacity-80">
           {features.map((feature, i) => (
             <li key={i} className="flex items-center gap-2">

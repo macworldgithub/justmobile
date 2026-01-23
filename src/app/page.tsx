@@ -7,6 +7,7 @@ import HowItWorks from "./components/AppComponents/Works";
 import Banner from "./components/AppComponents/Banner";
 import JustMobile from "./components/AppComponents/JustMobile";
 import { useRouter } from "next/navigation";
+import SupportPlans from "./components/AppComponents/SupportPlans";
 
 export default function Home() {
   const router = useRouter();
@@ -47,6 +48,7 @@ export default function Home() {
         ]}
       />
       <Small />
+      <SupportPlans />
       <JustMobile
         title="How It Works"
         circleImage="/images/bg.png"

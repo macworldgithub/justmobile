@@ -9,6 +9,7 @@ interface TextProps {
   className?: string;
 }
 
+
 export const Text: React.FC<TextProps> = ({
   children,
   variant = "body",
