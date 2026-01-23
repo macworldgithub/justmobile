@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { PaymentCard } from "./PaymentCard";
 import { useRouter, useSearchParams } from "next/navigation";
-// import { formatDob, formatDobToISO, isDeleteIntent } from "@/lib/utils";
-import { formatDobToISO, isDeleteIntent } from "@/lib/utils";
-
+import { formatDob, formatDobToISO, isDeleteIntent } from "@/src/lib/utils";
 import sessionStorage from "redux-persist/es/storage/session";
 // import DatePicker from "react-datepicker";
 
@@ -989,29 +987,29 @@ No worries — you can try again or choose one of the options below, and I’ll 
         className="absolute inset-0 bg-cover bg-center blur-sm opacity-60"
         style={{ backgroundImage: "url('/images/banner.png')" }}
       />
-      <div className="absolute inset-0 bg-linear-to-br from-[#0E3B5C]/80 via-[#05263D]/90 to-[#000000]/85 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-linear-to-br from-[#919191]/80 via-[#231e20]/90 to-[#000000]/85 backdrop-blur-md" />
 
       {/* Chat window container */}
       <div className="relative z-10 w-full max-w-3xl mx-auto  bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
 
-        <div className="flex justify-between items-center p-3 sm:p-4 bg-linear-to-r from-[#A9D7F1] via-[#F9F4F8] to-[#F8CFF3] shadow-md">
+        <div className="flex justify-between items-center p-3 sm:p-4 bg-white shadow-md">
           {/* Left: Main Logo */}
           <div className="flex items-center gap-2">
             <img
               src="/images/logo.png"
               alt="Logo"
-              className="hidden sm:block h-8 sm:h-10 w-auto drop-shadow-md"
+              className="hidden sm:block h-8 sm:h-16 w-auto drop-shadow-md"
             />
           </div>
 
           {/* Right: Just Mobile Logo + Close */}
           <div className="flex items-center gap-3">
-            <img
+            {/* <img
               src="/images/just-mobile-logo.png"
               alt="Just Mobile"
               className="h-10 sm:h-12 w-auto drop-shadow-md"
-            />
+            /> */}
 
             <button
               onClick={() => router.push("/")}
@@ -1451,7 +1449,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
                   className={`mt-3 sm:mt-4 w-full py-3 rounded text-white font-semibold transition-opacity ${
                     ageError
                       ? "bg-gray-500 cursor-not-allowed"
-                      : "bg-linear-to-r from-blue-600 to-teal-500 hover:opacity-90"
+                      : "bg-gray-800 hover:opacity-90"
                   }`}
                 >
                   {loading ? "Submitting..." : "Submit Details"}
