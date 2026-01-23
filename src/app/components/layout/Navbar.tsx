@@ -27,7 +27,7 @@ import DeleteCustomerModal from "../AppComponents/DeleteCustomerModal";
 const NAV_LINKS = [
   { label: "BUY ESIM", href: "/chat-window?fromBanner=true" },
   { label: "MANAGE ACCOUNT", href: "/Program" },
-  { label: "Support", href: "/support" },
+  { label: "Support", href: "/chat-window?support=true" },
   // { label: "About", href: "/About" },
   // { label: "Contact", href: "/Contact" },
 ];

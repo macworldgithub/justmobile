@@ -91,6 +91,7 @@ const ChatWindow = () => {
 
   useEffect(() => {
     const fromBanner = searchParams.get("fromBanner");
+    const support = searchParams.get("support");
     if (fromBanner) {
       setShowInitialOptions(false);
       setIsTypingEnabled(true);
@@ -106,6 +107,20 @@ const ChatWindow = () => {
         },
       ]);
       setShowDetailsForm(true);
+    } else if (support) {
+      setShowInitialOptions(false);
+      setIsTypingEnabled(true);
+      setChat([
+        {
+          id: 1,
+          type: "bot",
+          text: "Please describe your account, billing, or technical issue and I'll help you resolve it.",
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
     }
   }, [searchParams]);
 
