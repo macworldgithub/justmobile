@@ -281,7 +281,7 @@ export const Navbar: React.FC = () => {
                 key={link.href}
                 href={link.href}
                 label={link.label}
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-gray-500 hover:text-[#231e20] font-medium"
               />
             ))}
           </nav>
