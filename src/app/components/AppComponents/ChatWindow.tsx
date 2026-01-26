@@ -92,6 +92,26 @@ const ChatWindow = () => {
   useEffect(() => {
     const fromBanner = searchParams.get("fromBanner");
     const support = searchParams.get("support");
+    
+    
+    setShowDetailsForm(false);
+    setShowPlans(false);
+    setShowPayment(false);
+    setShowNumberButtons(false);
+    setShowNumberTypeSelection(false);
+    setShowConfirmNewNumber(false);
+    setShowExistingNumberOptions(false);
+    setShowArnInput(false);
+    setShowOtpInput(false);
+    setShowConfirmExistingNumber(false);
+    setSelectedPlan(null);
+    setSelectedSim(null);
+    setIsPorting(false);
+    setHasSelectedNumber(false);
+    setNumberDecisionMade(false);
+    setOtpVerified(false);
+    setFlowCompleted(false);
+    
     if (fromBanner) {
       setShowInitialOptions(false);
       setIsTypingEnabled(true);
@@ -121,6 +141,12 @@ const ChatWindow = () => {
           }),
         },
       ]);
+      setShowDetailsForm(false); 
+    } else {
+  
+      setShowInitialOptions(true);
+      setIsTypingEnabled(false);
+      setChat([]);
     }
   }, [searchParams]);
 
