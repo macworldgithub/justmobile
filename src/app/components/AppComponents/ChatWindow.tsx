@@ -92,8 +92,8 @@ const ChatWindow = () => {
   useEffect(() => {
     const fromBanner = searchParams.get("fromBanner");
     const support = searchParams.get("support");
-    
-    
+    const planParam = searchParams.get("plan");
+
     setShowDetailsForm(false);
     setShowPlans(false);
     setShowPayment(false);
@@ -111,7 +111,7 @@ const ChatWindow = () => {
     setNumberDecisionMade(false);
     setOtpVerified(false);
     setFlowCompleted(false);
-    
+
     if (fromBanner) {
       setShowInitialOptions(false);
       setIsTypingEnabled(true);
@@ -141,9 +141,8 @@ const ChatWindow = () => {
           }),
         },
       ]);
-      setShowDetailsForm(false); 
+      setShowDetailsForm(false);
     } else {
-  
       setShowInitialOptions(true);
       setIsTypingEnabled(false);
       setChat([]);
@@ -164,7 +163,25 @@ const ChatWindow = () => {
           const match = list.find((p) => p.planName === planParam);
           if (match) {
             setSelectedPlan(match);
+            setShowInitialOptions(false);
+            setIsTypingEnabled(true);
             setShowDetailsForm(true);
+            setChat((prev) => {
+              if (prev.length === 0) {
+                return [
+                  {
+                    id: 1,
+                    type: "bot" as const,
+                    text: `Great choice! You selected ${match.planName} — $${match.price}. Please fill in your details below to continue.`,
+                    time: new Date().toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }),
+                  },
+                ];
+              }
+              return prev;
+            });
           }
         }
       } catch (e) {
@@ -1026,7 +1043,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
       {/* Background layers */}
       <div
         className="absolute inset-0 bg-cover bg-center blur-sm opacity-60"
-        style={{ backgroundImage: "url('/images/banner.png')" }}
+        style={{ backgroundImage: "url('/images/bgbanner.png')" }}
       />
       <div className="absolute inset-0 bg-linear-to-br from-[#919191]/80 via-[#231e20]/90 to-[#000000]/85 backdrop-blur-md" />
 

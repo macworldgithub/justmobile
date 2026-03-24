@@ -12,7 +12,7 @@ export const LoginApi = createAsyncThunk<
 
     const loginRes = await axios.post(
       `https://bele.omnisuiteai.com/auth/login`,
-      { identifier: email, pin }
+      { identifier: email, pin },
     );
 
     const { access_token } = loginRes.data;
@@ -37,7 +37,7 @@ export const LoginApi = createAsyncThunk<
     };
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data || { message: "Something went wrong" }
+      error.response?.data || { message: "Something went wrong" },
     );
   }
 });
@@ -54,14 +54,16 @@ export const DeleteCustomerApi = createAsyncThunk<
       return rejectWithValue({ message: "Customer number not found" });
     }
 
-    await axios.delete(`https://bele.omnisuiteai.com/api/v1/customers/${custNo}`);
+    await axios.delete(
+      `https://bele.omnisuiteai.com/api/v1/customers/${custNo}`,
+    );
 
     localStorage.removeItem("custNo");
 
     return { custNo };
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data || { message: "Failed to delete customer" }
+      error.response?.data || { message: "Failed to delete customer" },
     );
   }
 });
