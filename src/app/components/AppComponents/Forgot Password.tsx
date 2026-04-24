@@ -26,7 +26,7 @@
 //     setStatus("idle");
 
 //     try {
-//       const res = await fetch("https://bele.omnisuiteai.com/auth/forgot-pin", {
+//       const res = await fetch("https://backend-bele.omnisuiteai.com/auth/forgot-pin", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -174,16 +174,19 @@ export default function ForgotPassword() {
     setMessage("");
 
     try {
-      const res = await fetch("https://bele.omnisuiteai.com/auth/forgot-pin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "*/*",
+      const res = await fetch(
+        "https://backend-bele.omnisuiteai.com/auth/forgot-pin",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "*/*",
+          },
+          body: JSON.stringify({
+            identifier: email.trim(),
+          }),
         },
-        body: JSON.stringify({
-          identifier: email.trim(),
-        }),
-      });
+      );
 
       const data = await res.json();
 

@@ -48,7 +48,7 @@ export default function SupportPlans() {
     const fetchPlans = async () => {
       try {
         const response = await fetch(
-          "https://bele.omnisuiteai.com/api/v1/plans",
+          "https://backend-bele.omnisuiteai.com/api/v1/plans",
         );
         if (!response.ok) throw new Error("Failed to fetch plans");
         const data = await response.json();

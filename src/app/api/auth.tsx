@@ -11,7 +11,7 @@ export const LoginApi = createAsyncThunk<
     const { email, pin } = (getState() as RootState).login;
 
     const loginRes = await axios.post(
-      `https://bele.omnisuiteai.com/auth/login`,
+      `https://backend-bele.omnisuiteai.com/auth/login`,
       { identifier: email, pin },
     );
 
@@ -21,9 +21,12 @@ export const LoginApi = createAsyncThunk<
       return rejectWithValue({ message: "Login failed: No access token" });
     }
 
-    const meRes = await axios.get(`https://bele.omnisuiteai.com/user/me`, {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
+    const meRes = await axios.get(
+      `https://backend-bele.omnisuiteai.com/user/me`,
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+      },
+    );
 
     const custNo = meRes.data?.user?.custNo;
 
@@ -55,7 +58,7 @@ export const DeleteCustomerApi = createAsyncThunk<
     }
 
     await axios.delete(
-      `https://bele.omnisuiteai.com/api/v1/customers/${custNo}`,
+      `https://backend-bele.omnisuiteai.com/api/v1/customers/${custNo}`,
     );
 
     localStorage.removeItem("custNo");

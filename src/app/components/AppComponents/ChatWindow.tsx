@@ -152,7 +152,9 @@ const ChatWindow = () => {
   useEffect(() => {
     const loadPlans = async () => {
       try {
-        const res = await fetch("https://bele.omnisuiteai.com/api/v1/plans");
+        const res = await fetch(
+          "https://backend-bele.omnisuiteai.com/api/v1/plans",
+        );
         const data = await res.json();
         const list: Plan[] = data.data || [];
         setPlans(list);
@@ -195,7 +197,7 @@ const ChatWindow = () => {
   useEffect(() => {
     if (showDetailsForm && states.length === 0) {
       setLoadingStates(true);
-      fetch("https://bele.omnisuiteai.com/states")
+      fetch("https://backend-bele.omnisuiteai.com/states")
         .then((res) => res.json())
         .then((data) => setStates(data))
         .catch((err) => console.error("Failed to fetch states:", err))
@@ -652,14 +654,17 @@ const ChatWindow = () => {
         );
         return;
       }
-      const res = await fetch("https://bele.omnisuiteai.com/api/v1/auth/otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          custNo,
-          destination: existingPhone,
-        }),
-      });
+      const res = await fetch(
+        "https://backend-bele.omnisuiteai.com/api/v1/auth/otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            custNo,
+            destination: existingPhone,
+          }),
+        },
+      );
 
       const data = await res.json();
 
@@ -687,14 +692,17 @@ const ChatWindow = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("https://bele.omnisuiteai.com/api/v1/auth/otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          custNo,
-          destination: existingPhone,
-        }),
-      });
+      const res = await fetch(
+        "https://backend-bele.omnisuiteai.com/api/v1/auth/otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            custNo,
+            destination: existingPhone,
+          }),
+        },
+      );
 
       const data = await res.json();
 
@@ -831,7 +839,7 @@ const ChatWindow = () => {
 
     try {
       const res = await fetch(
-        "https://bele.omnisuiteai.com/api/v1/auth/otp/verify",
+        "https://backend-bele.omnisuiteai.com/api/v1/auth/otp/verify",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -867,7 +875,7 @@ const ChatWindow = () => {
     }
   };
   const callDeleteIntentAPI = async (text: string) => {
-    const res = await fetch("https://bele.omnisuiteai.com/chat/query", {
+    const res = await fetch("https://backend-bele.omnisuiteai.com/chat/query", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: text }),
@@ -936,8 +944,8 @@ const ChatWindow = () => {
       console.log("Activation payload:", body);
 
       const url = isPorting
-        ? "https://bele.omnisuiteai.com/api/v1/orders/activate/port"
-        : "https://bele.omnisuiteai.com/api/v1/orders/activate";
+        ? "https://backend-bele.omnisuiteai.com/api/v1/orders/activate/port"
+        : "https://backend-bele.omnisuiteai.com/api/v1/orders/activate";
 
       const res = await fetch(url, {
         method: "POST",

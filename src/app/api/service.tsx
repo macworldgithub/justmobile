@@ -16,7 +16,7 @@ export const fetchCustomerServices = createAsyncThunk<
       }
 
       const res = await axios.get(
-        `https://bele.omnisuiteai.com/api/v1/customers/${custNo}/services`,
+        `https://backend-bele.omnisuiteai.com/api/v1/customers/${custNo}/services`,
       );
       return res.data;
     } catch (error: any) {

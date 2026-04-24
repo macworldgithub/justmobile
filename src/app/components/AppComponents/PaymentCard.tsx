@@ -113,7 +113,7 @@ export const PaymentCard = ({
             if (!token) throw new Error("No token returned");
 
             const methodResponse = await fetch(
-              "https://bele.omnisuiteai.com/api/v1/payments/methods",
+              "https://backend-bele.omnisuiteai.com/api/v1/payments/methods",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -160,7 +160,7 @@ export const PaymentCard = ({
             // };
 
             // const processResponse = await fetch(
-            //   "https://bele.omnisuiteai.com/api/v1/payments/process",
+            //   "https://backend-bele.omnisuiteai.com/api/v1/payments/process",
             //   {
             //     method: "POST",
             //     headers: { "Content-Type": "application/json" },
@@ -177,7 +177,7 @@ export const PaymentCard = ({
               if (!storedCustNo) throw new Error("Customer number missing");
 
               const updateResponse = await fetch(
-                `https://bele.omnisuiteai.com/api/v1/orders/${storedCustNo}/plan`,
+                `https://backend-bele.omnisuiteai.com/api/v1/orders/${storedCustNo}/plan`,
                 {
                   method: "PATCH",
                   headers: { "Content-Type": "application/json" },
