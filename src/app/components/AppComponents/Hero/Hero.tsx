@@ -71,7 +71,7 @@ const Hero: React.FC<HeroProps> = ({
               </Button>
 
               <div className="flex items-center text-sm text-gray-300">
-                <div className="flex -space-x-2 mr-3">
+                {/* <div className="flex -space-x-2 mr-3">
                   {[1, 2, 3].map((item) => (
                     <div
                       key={item}
@@ -79,7 +79,7 @@ const Hero: React.FC<HeroProps> = ({
                       style={{ zIndex: 3 - item }}
                     />
                   ))}
-                </div>
+                </div> */}
                 <span>{userCount}</span>
               </div>
             </motion.div>
