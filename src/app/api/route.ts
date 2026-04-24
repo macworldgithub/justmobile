@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const response = await fetch("https://bele.omnisuiteai.com/chat/query", {
+    const response = await fetch("https://backend-bele.omnisuiteai.com/chat/query", {
       method: "POST",
       headers: {
         Accept: "application/json",
