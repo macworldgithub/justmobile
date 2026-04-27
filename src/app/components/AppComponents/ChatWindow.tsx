@@ -4,6 +4,7 @@ import { PaymentCard } from "./PaymentCard";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDob, formatDobToISO, isDeleteIntent } from "@/src/lib/utils";
 import sessionStorage from "redux-persist/es/storage/session";
+import { motion, AnimatePresence } from "framer-motion";
 // import DatePicker from "react-datepicker";
 
 interface Plan {
@@ -75,6 +76,7 @@ const ChatWindow = () => {
   const [ageError, setAgeError] = useState("");
   const [flowCompleted, setFlowCompleted] = useState(false);
   const [typingDots, setTypingDots] = useState("");
+  const [showTip, setShowTip] = useState(true);
 
   useEffect(() => {
     if (!loading) {
@@ -1040,6 +1042,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
       );
     } else if (option === "transfer-number") {
       setIsTransferMode(true);
+      setShowTip(true);
       await handleSend("signup");
     }
   };
@@ -1047,6 +1050,14 @@ No worries — you can try again or choose one of the options below, and I’ll 
   const sendMessage = () => {
     handleSend(message);
   };
+
+    useEffect(() => {
+    if (showDetailsForm && isTransferMode) {
+      setShowTip(true);
+    } else {
+      setShowTip(false);
+    }
+  }, [showDetailsForm, isTransferMode]);
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-[#05263D] overflow-hidden mt-18">
@@ -1188,10 +1199,35 @@ No worries — you can try again or choose one of the options below, and I’ll 
           {/* Input Bar */}
           <div className="mt-auto">
             {showDetailsForm ? (
+              <>
               <form
                 onSubmit={handleFormSubmit}
                 className="bg-white/10 backdrop-blur-sm p-3 sm:p-4 rounded-lg border border-black/30 overflow-y-auto max-h-[40vh] sm:max-h-[50vh]"
               >
+                 <AnimatePresence>
+                        {
+                          <motion.div
+                            initial={{ opacity: 0, y: -20, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                            transition={{ duration: 0.35, ease: "easeOut" }}
+                            className="relative mb-3 sm:mb-4 px-4 py-3 rounded-xl border border-blue-400/30 bg-gradient-to-r from-blue-500/10 to-teal-400/10 backdrop-blur-md text-black text-xs sm:text-sm shadow-md"
+                          >
+                            {/* Content */}
+                            <p className="leading-relaxed pr-5">
+                              <span className="font-semibold text-blue-700">
+                                Before you start:
+                              </span>{" "}
+                              If you're transferring your number, you'll need
+                              your{" "}
+                              <span className="font-semibold underline decoration-blue-500">
+                                existing provider account number
+                              </span>
+                              .
+                            </p>
+                          </motion.div>
+                        }
+                      </AnimatePresence>
                 <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
                   <div>
                     <input
@@ -1518,6 +1554,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
                   {loading ? "Submitting..." : "Submit Details"}
                 </button>
               </form>
+               </>
             ) : showNumberTypeSelection && !isTransferMode ? (
               <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/30 text-center">
                 <p className="text-white mb-3">
