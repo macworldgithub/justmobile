@@ -1211,7 +1211,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.98 }}
                             transition={{ duration: 0.35, ease: "easeOut" }}
-                            className="relative mb-3 sm:mb-4 px-4 py-3 rounded-xl border border-blue-400/30 bg-gradient-to-r from-blue-500/10 to-teal-400/10 backdrop-blur-md text-black text-xs sm:text-sm shadow-md"
+                            className="relative mb-3 sm:mb-4 px-4 py-3 rounded-xl border border-blue-400/30 bg-gradient-to-r from-white to-teal-500/10 backdrop-blur-md text-black text-xs sm:text-sm shadow-md"
                           >
                             {/* Content */}
                             <p className="leading-relaxed pr-5">
