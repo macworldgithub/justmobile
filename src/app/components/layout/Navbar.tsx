@@ -26,7 +26,7 @@ import DeleteCustomerModal from "../AppComponents/DeleteCustomerModal";
 
 const NAV_LINKS = [
   { label: "BUY ESIM", href: "/chat-window?fromBanner=true" },
-  { label: "MANAGE ACCOUNT", href: "/Program" },
+  // { label: "MANAGE ACCOUNT", href: "/Program" },
   { label: "Support", href: "/chat-window?support=true" },
   // { label: "About", href: "/About" },
   // { label: "Contact", href: "/Contact" },
@@ -124,7 +124,7 @@ export const Navbar: React.FC = () => {
     try {
       const [serviceRes, mobileBalanceRes, unbilledRes] = await Promise.all([
         fetch(
-          `https://bele.omnisuiteai.com/api/v1/customers/${custNo}/services`,
+          `https://backend-bele.omnisuiteai.com/api/v1/customers/${custNo}/services`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -133,13 +133,13 @@ export const Navbar: React.FC = () => {
           },
         ),
         fetch(
-          `https://bele.omnisuiteai.com/api/v1/customers/${custNo}/balance/mobile?lineSeqNo=1`,
+          `https://backend-bele.omnisuiteai.com/api/v1/customers/${custNo}/balance/mobile?lineSeqNo=1`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
         ),
         fetch(
-          `https://bele.omnisuiteai.com/api/v1/customers/${custNo}/unbilled-summary`,
+          `https://backend-bele.omnisuiteai.com/api/v1/customers/${custNo}/unbilled-summary`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
@@ -212,17 +212,20 @@ export const Navbar: React.FC = () => {
     setStatus("idle");
 
     try {
-      const res = await fetch("https://bele.omnisuiteai.com/auth/change-pin", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "*/*",
-          Authorization: `Bearer ${
-            access_token || localStorage.getItem("access_token")
-          }`,
+      const res = await fetch(
+        "https://backend-bele.omnisuiteai.com/auth/change-pin",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "*/*",
+            Authorization: `Bearer ${
+              access_token || localStorage.getItem("access_token")
+            }`,
+          },
+          body: JSON.stringify({ oldPin, newPin }),
         },
-        body: JSON.stringify({ oldPin, newPin }),
-      });
+      );
 
       const data = await res.json();
 

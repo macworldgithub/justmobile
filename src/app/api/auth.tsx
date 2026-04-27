@@ -11,8 +11,8 @@ export const LoginApi = createAsyncThunk<
     const { email, pin } = (getState() as RootState).login;
 
     const loginRes = await axios.post(
-      `https://bele.omnisuiteai.com/auth/login`,
-      { identifier: email, pin }
+      `https://backend-bele.omnisuiteai.com/auth/login`,
+      { identifier: email, pin },
     );
 
     const { access_token } = loginRes.data;
@@ -21,9 +21,12 @@ export const LoginApi = createAsyncThunk<
       return rejectWithValue({ message: "Login failed: No access token" });
     }
 
-    const meRes = await axios.get(`https://bele.omnisuiteai.com/user/me`, {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
+    const meRes = await axios.get(
+      `https://backend-bele.omnisuiteai.com/user/me`,
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+      },
+    );
 
     const custNo = meRes.data?.user?.custNo;
 
@@ -37,7 +40,7 @@ export const LoginApi = createAsyncThunk<
     };
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data || { message: "Something went wrong" }
+      error.response?.data || { message: "Something went wrong" },
     );
   }
 });
@@ -54,14 +57,16 @@ export const DeleteCustomerApi = createAsyncThunk<
       return rejectWithValue({ message: "Customer number not found" });
     }
 
-    await axios.delete(`https://bele.omnisuiteai.com/api/v1/customers/${custNo}`);
+    await axios.delete(
+      `https://backend-bele.omnisuiteai.com/api/v1/customers/${custNo}`,
+    );
 
     localStorage.removeItem("custNo");
 
     return { custNo };
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data || { message: "Failed to delete customer" }
+      error.response?.data || { message: "Failed to delete customer" },
     );
   }
 });

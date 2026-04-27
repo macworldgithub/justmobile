@@ -4,6 +4,7 @@ import { PaymentCard } from "./PaymentCard";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDob, formatDobToISO, isDeleteIntent } from "@/src/lib/utils";
 import sessionStorage from "redux-persist/es/storage/session";
+import { motion, AnimatePresence } from "framer-motion";
 // import DatePicker from "react-datepicker";
 
 interface Plan {
@@ -75,6 +76,7 @@ const ChatWindow = () => {
   const [ageError, setAgeError] = useState("");
   const [flowCompleted, setFlowCompleted] = useState(false);
   const [typingDots, setTypingDots] = useState("");
+  const [showTip, setShowTip] = useState(true);
 
   useEffect(() => {
     if (!loading) {
@@ -92,8 +94,8 @@ const ChatWindow = () => {
   useEffect(() => {
     const fromBanner = searchParams.get("fromBanner");
     const support = searchParams.get("support");
-    
-    
+    const planParam = searchParams.get("plan");
+
     setShowDetailsForm(false);
     setShowPlans(false);
     setShowPayment(false);
@@ -111,7 +113,7 @@ const ChatWindow = () => {
     setNumberDecisionMade(false);
     setOtpVerified(false);
     setFlowCompleted(false);
-    
+
     if (fromBanner) {
       setShowInitialOptions(false);
       setIsTypingEnabled(true);
@@ -141,9 +143,8 @@ const ChatWindow = () => {
           }),
         },
       ]);
-      setShowDetailsForm(false); 
+      setShowDetailsForm(false);
     } else {
-  
       setShowInitialOptions(true);
       setIsTypingEnabled(false);
       setChat([]);
@@ -153,7 +154,9 @@ const ChatWindow = () => {
   useEffect(() => {
     const loadPlans = async () => {
       try {
-        const res = await fetch("https://bele.omnisuiteai.com/api/v1/plans");
+        const res = await fetch(
+          "https://backend-bele.omnisuiteai.com/api/v1/plans",
+        );
         const data = await res.json();
         const list: Plan[] = data.data || [];
         setPlans(list);
@@ -164,7 +167,25 @@ const ChatWindow = () => {
           const match = list.find((p) => p.planName === planParam);
           if (match) {
             setSelectedPlan(match);
+            setShowInitialOptions(false);
+            setIsTypingEnabled(true);
             setShowDetailsForm(true);
+            setChat((prev) => {
+              if (prev.length === 0) {
+                return [
+                  {
+                    id: 1,
+                    type: "bot" as const,
+                    text: `Great choice! You selected ${match.planName} — $${match.price}. Please fill in your details below to continue.`,
+                    time: new Date().toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }),
+                  },
+                ];
+              }
+              return prev;
+            });
           }
         }
       } catch (e) {
@@ -178,7 +199,7 @@ const ChatWindow = () => {
   useEffect(() => {
     if (showDetailsForm && states.length === 0) {
       setLoadingStates(true);
-      fetch("https://bele.omnisuiteai.com/states")
+      fetch("https://backend-bele.omnisuiteai.com/states")
         .then((res) => res.json())
         .then((data) => setStates(data))
         .catch((err) => console.error("Failed to fetch states:", err))
@@ -591,7 +612,7 @@ const ChatWindow = () => {
 
   const handleExistingNumber = () => {
     setShowNumberTypeSelection(false);
-    setShowConfirmNewNumber(true);
+    setShowConfirmNewNumber(false);
     setExistingNumberType(null);
     setShowArnInput(false);
     setArn("");
@@ -626,6 +647,7 @@ const ChatWindow = () => {
       setIsPorting(true);
       setHasSelectedNumber(true);
       setShowNumberButtons(false);
+      setSelectedSim(existingPhone);
 
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -635,14 +657,17 @@ const ChatWindow = () => {
         );
         return;
       }
-      const res = await fetch("https://bele.omnisuiteai.com/api/v1/auth/otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          custNo,
-          destination: existingPhone,
-        }),
-      });
+      const res = await fetch(
+        "https://backend-bele.omnisuiteai.com/api/v1/auth/otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            custNo,
+            destination: existingPhone,
+          }),
+        },
+      );
 
       const data = await res.json();
 
@@ -670,14 +695,17 @@ const ChatWindow = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("https://bele.omnisuiteai.com/api/v1/auth/otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          custNo,
-          destination: existingPhone,
-        }),
-      });
+      const res = await fetch(
+        "https://backend-bele.omnisuiteai.com/api/v1/auth/otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            custNo,
+            destination: existingPhone,
+          }),
+        },
+      );
 
       const data = await res.json();
 
@@ -811,10 +839,9 @@ const ChatWindow = () => {
       alert("Please enter a 6-digit OTP");
       return;
     }
-
     try {
       const res = await fetch(
-        "https://bele.omnisuiteai.com/api/v1/auth/otp/verify",
+        "https://backend-bele.omnisuiteai.com/api/v1/auth/otp/verify",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -850,7 +877,7 @@ const ChatWindow = () => {
     }
   };
   const callDeleteIntentAPI = async (text: string) => {
-    const res = await fetch("https://bele.omnisuiteai.com/chat/query", {
+    const res = await fetch("https://backend-bele.omnisuiteai.com/chat/query", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: text }),
@@ -892,14 +919,16 @@ const ChatWindow = () => {
       const existingType = existingNumberType;
       const arn = localStorage.getItem("arn") || "";
       const dob = formData.dob || "";
+      const portingNo = localStorage.getItem("portingNumber") || "";
+      const activationNumber = isPorting ? portingNo : selectedSim || "";
 
       let body: any = {
-        number: selectedSim,
+        number: activationNumber,
         cust: {
           custNo,
           suburb: formData.suburb,
           postcode: formData.postcode,
-          address: formData.address,
+          address: formData.address.trim(),
           email: formData.email,
         },
         planNo: String(selectedPlan?.planNo),
@@ -910,7 +939,7 @@ const ChatWindow = () => {
         body.numType = existingType;
 
         if (existingType === "prepaid") {
-          body.cust.dob = formatDob(dob);
+          body.cust.dob = dob;
         } else if (existingType === "postpaid") {
           body.cust.arn = arn;
         }
@@ -919,8 +948,8 @@ const ChatWindow = () => {
       console.log("Activation payload:", body);
 
       const url = isPorting
-        ? "https://bele.omnisuiteai.com/api/v1/orders/activate/port"
-        : "https://bele.omnisuiteai.com/api/v1/orders/activate";
+        ? "https://backend-bele.omnisuiteai.com/api/v1/orders/activate/port"
+        : "https://backend-bele.omnisuiteai.com/api/v1/orders/activate";
 
       const res = await fetch(url, {
         method: "POST",
@@ -1013,6 +1042,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
       );
     } else if (option === "transfer-number") {
       setIsTransferMode(true);
+      setShowTip(true);
       await handleSend("signup");
     }
   };
@@ -1021,12 +1051,20 @@ No worries — you can try again or choose one of the options below, and I’ll 
     handleSend(message);
   };
 
+    useEffect(() => {
+    if (showDetailsForm && isTransferMode) {
+      setShowTip(true);
+    } else {
+      setShowTip(false);
+    }
+  }, [showDetailsForm, isTransferMode]);
+
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-[#05263D] overflow-hidden mt-18">
       {/* Background layers */}
       <div
         className="absolute inset-0 bg-cover bg-center blur-sm opacity-60"
-        style={{ backgroundImage: "url('/images/banner.png')" }}
+        style={{ backgroundImage: "url('/images/bgbanner.png')" }}
       />
       <div className="absolute inset-0 bg-linear-to-br from-[#919191]/80 via-[#231e20]/90 to-[#000000]/85 backdrop-blur-md" />
 
@@ -1080,9 +1118,8 @@ No worries — you can try again or choose one of the options below, and I’ll 
           {chat.map((msg) => (
             <div
               key={msg.id}
-              className={`flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6 ${
-                msg.type === "user" ? "justify-end" : "justify-start"
-              }`}
+              className={`flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6 ${msg.type === "user" ? "justify-end" : "justify-start"
+                }`}
             >
               {msg.type === "bot" && (
                 <div className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-yellow-400 rounded-full shrink-0 flex items-center justify-center overflow-hidden">
@@ -1095,11 +1132,10 @@ No worries — you can try again or choose one of the options below, and I’ll 
               )}
 
               <div
-                className={`${
-                  msg.type === "user"
-                    ? "bg-white text-[#0E3B5C]"
-                    : "bg-white text-[#0E3B5C]"
-                } rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-2 shadow-md max-w-[90%] sm:max-w-[80%] md:max-w-[70%]`}
+                className={`${msg.type === "user"
+                  ? "bg-white text-[#0E3B5C]"
+                  : "bg-white text-[#0E3B5C]"
+                  } rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-2 shadow-md max-w-[90%] sm:max-w-[80%] md:max-w-[70%]`}
               >
                 <p className="text-xs sm:text-xs md:text-sm leading-relaxed wrap-break-word">
                   {msg.text}
@@ -1163,10 +1199,35 @@ No worries — you can try again or choose one of the options below, and I’ll 
           {/* Input Bar */}
           <div className="mt-auto">
             {showDetailsForm ? (
+              <>
               <form
                 onSubmit={handleFormSubmit}
                 className="bg-white/10 backdrop-blur-sm p-3 sm:p-4 rounded-lg border border-black/30 overflow-y-auto max-h-[40vh] sm:max-h-[50vh]"
               >
+                 <AnimatePresence>
+                        {
+                          <motion.div
+                            initial={{ opacity: 0, y: -20, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                            transition={{ duration: 0.35, ease: "easeOut" }}
+                            className="relative mb-3 sm:mb-4 px-4 py-3 rounded-xl border border-blue-400/30 bg-gradient-to-r from-blue-500/10 to-teal-400/10 backdrop-blur-md text-black text-xs sm:text-sm shadow-md"
+                          >
+                            {/* Content */}
+                            <p className="leading-relaxed pr-5">
+                              <span className="font-semibold text-blue-700">
+                                Before you start:
+                              </span>{" "}
+                              If you're transferring your number, you'll need
+                              your{" "}
+                              <span className="font-semibold underline decoration-blue-500">
+                                existing provider account number
+                              </span>
+                              .
+                            </p>
+                          </motion.div>
+                        }
+                      </AnimatePresence>
                 <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
                   <div>
                     <input
@@ -1485,15 +1546,15 @@ No worries — you can try again or choose one of the options below, and I’ll 
                 <button
                   type="submit"
                   disabled={loading || ageError !== ""}
-                  className={`mt-3 sm:mt-4 w-full py-3 rounded text-white font-semibold transition-opacity ${
-                    ageError
-                      ? "bg-gray-500 cursor-not-allowed"
-                      : "bg-[#919191] to-[#231e20] hover:opacity-70"
-                  }`}
+                  className={`mt-3 sm:mt-4 w-full py-3 rounded text-white font-semibold transition-opacity ${ageError
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-[#919191] to-[#231e20] hover:opacity-70"
+                    }`}
                 >
                   {loading ? "Submitting..." : "Submit Details"}
                 </button>
               </form>
+               </>
             ) : showNumberTypeSelection && !isTransferMode ? (
               <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/30 text-center">
                 <p className="text-white mb-3">
@@ -1542,21 +1603,19 @@ No worries — you can try again or choose one of the options below, and I’ll 
                 <div className="flex gap-3 justify-center mb-4">
                   <button
                     onClick={() => handleExistingTypeSelect("prepaid")}
-                    className={`px-4 py-2 rounded ${
-                      existingNumberType === "prepaid"
-                        ? "bg-linear-to-r from-blue-600 to-teal-500"
-                        : "bg-gray-400"
-                    } text-white`}
+                    className={`px-4 py-2 rounded ${existingNumberType === "prepaid"
+                      ? "bg-linear-to-r from-blue-600 to-teal-500"
+                      : "bg-gray-400"
+                      } text-white`}
                   >
                     Prepaid
                   </button>
                   <button
                     onClick={() => handleExistingTypeSelect("postpaid")}
-                    className={`px-4 py-2 rounded ${
-                      existingNumberType === "postpaid"
-                        ? "bg-linear-to-r from-blue-600 to-teal-500"
-                        : "bg-gray-400"
-                    } text-white`}
+                    className={`px-4 py-2 rounded ${existingNumberType === "postpaid"
+                      ? "bg-linear-to-r from-blue-600 to-teal-500"
+                      : "bg-gray-400"
+                      } text-white`}
                   >
                     Postpaid
                   </button>
