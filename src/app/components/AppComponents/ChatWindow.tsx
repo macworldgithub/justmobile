@@ -1150,7 +1150,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
             <div className="flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6 animate-fade-in">
               <div className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-yellow-400 rounded-full flex items-center justify-center overflow-hidden shadow-sm">
                 <img
-                  src="/images/bot.png"
+                  src="/images/bele-logo.png"
                   alt="Loading Avatar"
                   className="w-full h-full rounded-full object-cover"
                 />
