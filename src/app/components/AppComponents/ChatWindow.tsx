@@ -1125,7 +1125,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
               {msg.type === "bot" && (
                 <div className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-yellow-400 rounded-full shrink-0 flex items-center justify-center overflow-hidden">
                   <img
-                    src="/images/bot.png"
+                    src="/images/bele-logo.png"
                     alt="Bot Avatar"
                     className="w-full h-full rounded-full object-cover"
                   />
@@ -1161,7 +1161,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
                   Just mobiles Assistant
                 </p>
                 <p className="text-[#0E3B5C] text-xs sm:text-sm leading-relaxed">
-                  Choose and option below{typingDots}
+                  Just a moment{typingDots}
                 </p>
               </div>
             </div>
