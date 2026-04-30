@@ -496,7 +496,7 @@ const ChatWindow = () => {
 
         // show bot message from /chat/query
         if (data?.message) {
-          addBotMessage(data.message);
+          addBotMessage(normalizeBrandName(data.message));
         }
 
         // open modal AFTER success
@@ -548,7 +548,7 @@ const ChatWindow = () => {
       ]);
     }
 
-    const botText = data.message || data.response || "";
+    const botText = normalizeBrandName(data.message || data.response || "");
 
     if (
       botText.toLowerCase().includes("first name") ||
@@ -766,6 +766,10 @@ const ChatWindow = () => {
         }),
       },
     ]);
+  };
+
+  const normalizeBrandName = (text: string) => {
+    return text.replace(/flying\s*kiwi/gi, "JUSTmobile");
   };
   const handleNumberSelect = async (num: string) => {
     setSelectedSim(num);
@@ -1779,7 +1783,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
                 }}
               />
             ) : isTypingEnabled && !flowCompleted ? (
-              <div className="flex items-center gap-2 sm:gap-3 border border-white/30 rounded-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white">
+              <div className="flex items-center gap-2 sm:gap-3 border border-white/30 rounded-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white absolute bottom-4 w-[95%]">
                 <input
                   type="text"
                   value={message}
