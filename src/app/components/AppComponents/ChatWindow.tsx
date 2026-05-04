@@ -1063,8 +1063,8 @@ No worries — you can try again or choose one of the options below, and I’ll 
     }
   }, [showDetailsForm, isTransferMode]);
 
-  return (
-    <div className="relative flex items-center justify-center min-h-screen bg-[#05263D] overflow-hidden  md:mt-10 max-sm:mt-4  max-md:px-2">
+   return (
+    <div className="relative w-full h-[100dvh] bg-[#05263D] overflow-hidden">
       {/* Background layers */}
       <div
         className="absolute inset-0 bg-cover bg-center blur-sm opacity-60"
@@ -1073,7 +1073,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
       <div className="absolute inset-0 bg-linear-to-br from-[#919191]/80 via-[#231e20]/90 to-[#000000]/85 backdrop-blur-md" />
 
       {/* Chat window container */}
-      <div className="relative z-10 max-w-4xl md:w-[80%] lg:max-w-[90%] md:h-[80vh] max-md:h-[70vh] mx-auto  bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="absolute mt-28 inset-0 z-10 w-full h-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
 
         <div className="flex justify-between items-center p-3 sm:p-4 bg-white shadow-md">
