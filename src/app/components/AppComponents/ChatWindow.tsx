@@ -116,7 +116,7 @@ const ChatWindow = () => {
 
     if (fromBanner) {
       setShowInitialOptions(false);
-      setIsTypingEnabled(true);
+      setIsTypingEnabled(false);
       setChat([
         {
           id: 1,
@@ -168,7 +168,7 @@ const ChatWindow = () => {
           if (match) {
             setSelectedPlan(match);
             setShowInitialOptions(false);
-            setIsTypingEnabled(true);
+            setIsTypingEnabled(false);
             setShowDetailsForm(true);
             setChat((prev) => {
               if (prev.length === 0) {
@@ -488,6 +488,10 @@ const ChatWindow = () => {
     setChat((prev) => [...prev, userMsg]);
     setMessage("");
     setLoading(true);
+
+    if (text.toLowerCase().trim() === "signup") {
+      setIsTypingEnabled(false);
+    }
     if (isDeleteIntent(text)) {
       try {
         const data = await callDeleteIntentAPI(text);
@@ -556,6 +560,7 @@ const ChatWindow = () => {
     ) {
       if (!showNumberTypeSelection && !showConfirmNewNumber) {
         setShowDetailsForm(true);
+        setIsTypingEnabled(false);
       }
       return;
     }
@@ -1063,7 +1068,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
     }
   }, [showDetailsForm, isTransferMode]);
 
-   return (
+  return (
     <div className="relative w-full h-[100dvh] bg-[#05263D] overflow-hidden">
       {/* Background layers */}
       <div
@@ -1073,7 +1078,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
       <div className="absolute inset-0 bg-linear-to-br from-[#919191]/80 via-[#231e20]/90 to-[#000000]/85 backdrop-blur-md" />
 
       {/* Chat window container */}
-      <div className="absolute mt-28 inset-0 z-10 w-full h-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col overflow-hidden">
+      <div className="absolute top-28 inset-x-0 bottom-0 z-10 w-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
 
         <div className="flex justify-between items-center p-3 sm:p-4 bg-white shadow-md">
@@ -1105,7 +1110,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
         </div>
 
         {/* Chat body */}
-        <div className="flex flex-col  px-3 sm:px-6 py-4 sm:py-6 overflow-y-auto scroll-smooth">
+        <div className="flex-1 flex flex-col px-3 sm:px-6 py-4 sm:py-6 overflow-y-auto scroll-smooth relative">
           <div className="text-center mb-4 sm:mb-6 mt-2 sm:mt-4">
             <h2 className="text-[#ffffff] font-semibold text-base sm:text-lg mb-1 drop-shadow-sm">
               How can I help you today?
@@ -1122,9 +1127,8 @@ No worries — you can try again or choose one of the options below, and I’ll 
           {chat.map((msg) => (
             <div
               key={msg.id}
-              className={`flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6 ${
-                msg.type === "user" ? "justify-end" : "justify-start"
-              }`}
+              className={`flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6 ${msg.type === "user" ? "justify-end" : "justify-start"
+                }`}
             >
               {msg.type === "bot" && (
                 <div className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-yellow-400 rounded-full shrink-0 flex items-center justify-center overflow-hidden">
@@ -1137,11 +1141,10 @@ No worries — you can try again or choose one of the options below, and I’ll 
               )}
 
               <div
-                className={`${
-                  msg.type === "user"
-                    ? "bg-white text-[#0E3B5C]"
-                    : "bg-white text-[#0E3B5C]"
-                } rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-2 shadow-md max-w-[90%] sm:max-w-[80%] md:max-w-[70%]`}
+                className={`${msg.type === "user"
+                  ? "bg-white text-[#0E3B5C]"
+                  : "bg-white text-[#0E3B5C]"
+                  } rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-2 shadow-md max-w-[90%] sm:max-w-[80%] md:max-w-[70%]`}
               >
                 <p className="text-xs sm:text-xs md:text-sm leading-relaxed wrap-break-word">
                   {msg.text}
@@ -1179,7 +1182,7 @@ No worries — you can try again or choose one of the options below, and I’ll 
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => handleInitialOptionSelect("Buy an eSIM")}
-                  className="bg-[#919191] to-[#231e20]  text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
+                  className="bg-linear-to-r from-[#919191] to-[#231e20] text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
                 >
                   Buy an eSIM
                 </button>
@@ -1189,13 +1192,13 @@ No worries — you can try again or choose one of the options below, and I’ll 
                       "Account, billing or Technical Problem",
                     )
                   }
-                  className="bg-[#919191] to-[#231e20] text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
+                  className="bg-linear-to-r from-[#919191] to-[#231e20] text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
                 >
                   Account, billing or Technical Problem
                 </button>
                 <button
                   onClick={() => handleInitialOptionSelect("transfer-number")}
-                  className="bg-[#919191] to-[#231e20] text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
+                  className="bg-linear-to-r from-[#919191] to-[#231e20] text-white px-4 py-3 rounded-lg hover:opacity-40 transition-opacity text-sm sm:text-base font-medium"
                 >
                   Transfer my Number
                 </button>
@@ -1551,11 +1554,10 @@ No worries — you can try again or choose one of the options below, and I’ll 
                   <button
                     type="submit"
                     disabled={loading || ageError !== ""}
-                    className={`mt-3 sm:mt-4 w-full py-3 rounded text-white font-semibold transition-opacity ${
-                      ageError
-                        ? "bg-gray-500 cursor-not-allowed"
-                        : "bg-[#919191] to-[#231e20] hover:opacity-70"
-                    }`}
+                    className={`mt-3 sm:mt-4 w-full py-3 rounded text-white font-semibold transition-opacity ${ageError
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : "bg-linear-to-r from-[#919191] to-[#231e20] hover:opacity-70"
+                      } border-none`}
                   >
                     {loading ? "Submitting..." : "Submit Details"}
                   </button>
@@ -1609,21 +1611,19 @@ No worries — you can try again or choose one of the options below, and I’ll 
                 <div className="flex gap-3 justify-center mb-4">
                   <button
                     onClick={() => handleExistingTypeSelect("prepaid")}
-                    className={`px-4 py-2 rounded ${
-                      existingNumberType === "prepaid"
-                        ? "bg-linear-to-r from-blue-600 to-teal-500"
-                        : "bg-gray-400"
-                    } text-white`}
+                    className={`px-4 py-2 rounded ${existingNumberType === "prepaid"
+                      ? "bg-linear-to-r from-blue-600 to-teal-500"
+                      : "bg-gray-400"
+                      } text-white`}
                   >
                     Prepaid
                   </button>
                   <button
                     onClick={() => handleExistingTypeSelect("postpaid")}
-                    className={`px-4 py-2 rounded ${
-                      existingNumberType === "postpaid"
-                        ? "bg-linear-to-r from-blue-600 to-teal-500"
-                        : "bg-gray-400"
-                    } text-white`}
+                    className={`px-4 py-2 rounded ${existingNumberType === "postpaid"
+                      ? "bg-linear-to-r from-blue-600 to-teal-500"
+                      : "bg-gray-400"
+                      } text-white`}
                   >
                     Postpaid
                   </button>
@@ -1782,39 +1782,43 @@ No worries — you can try again or choose one of the options below, and I’ll 
                   if (success) handleActivateOrder();
                 }}
               />
-            ) : isTypingEnabled && !flowCompleted ? (
-              <div className="flex items-center gap-2 sm:gap-3 border border-white/30 rounded-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white absolute bottom-4 w-[95%]">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  placeholder="Message..."
-                  disabled={loading}
-                  className="flex-1 bg-transparent text-white placeholder-white/70 text-xs sm:text-sm focus:outline-none"
-                />
-
-                <button
-                  onClick={sendMessage}
-                  disabled={loading}
-                  className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-linear-to-r from-[#FFFFFF] to-[#231F20]text-white hover:opacity-90 disabled:opacity-50"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="2"
-                    className="w-3 h-3 sm:w-4 sm:h-4"
-                  >
-                    <path d="M22 2L11 13" />
-                    <path d="M22 2l-7 20-4-9-9-4 20-7z" />
-                  </svg>
-                </button>
-              </div>
             ) : null}
           </div>
         </div>
+
+        {isTypingEnabled && !flowCompleted && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[98%] z-30">
+            <div className="flex items-center gap-2 sm:gap-3 border border-white/20 rounded-full px-4 py-2 sm:py-3 bg-white/15 backdrop-blur-md shadow-2xl">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                placeholder="Message..."
+                disabled={loading}
+                className="flex-1 bg-transparent text-white placeholder-white/60 text-sm sm:text-base focus:outline-none px-2"
+              />
+
+              <button
+                onClick={sendMessage}
+                disabled={loading || !message.trim()}
+                className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#00A3FF] text-white hover:bg-[#008EDB] transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                >
+                  <path d="M22 2L11 13" />
+                  <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
