@@ -3532,38 +3532,39 @@ No worries — you can try again or choose one of the options below, and I'll he
           </div>
 
           {/* Typing input bar — sits naturally at the bottom, never overlaps */}
-         {isTypingEnabled && !flowCompleted && (
-  <div className="flex-shrink-0 w-full px-3 sm:px-4 py-3">
-    <div className="flex items-center gap-2 sm:gap-3 border border-white/20 rounded-full px-4 py-2 sm:py-3 bg-white/15 backdrop-blur-md shadow-2xl">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  placeholder="Message..."
-                  disabled={loading}
-                  className="flex-1 bg-transparent text-white placeholder-white/60 text-sm sm:text-base focus:outline-none px-2"
-                />
-                <button
-                  onClick={sendMessage}
-                  disabled={loading || !message.trim()}
-                  className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#00A3FF] text-white hover:bg-[#008EDB] transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    className="w-4 h-4 sm:w-5 sm:h-5"
-                  >
-                    <path d="M22 2L11 13" />
-                    <path d="M22 2l-7 20-4-9-9-4 20-7z" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
+          {/* Typing input bar — sits naturally at the bottom, never overlaps */}
+{isTypingEnabled && !flowCompleted && (
+  <div className="flex-shrink-0 w-full px-2 sm:px-4 py-2 sm:py-3 border-t border-white/10">
+    <div className="flex items-center gap-2 border border-white/20 rounded-full px-3 py-2 bg-white/15 backdrop-blur-md shadow-2xl w-full min-w-0">
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+        placeholder="Message..."
+        disabled={loading}
+        className="min-w-0 flex-1 bg-transparent text-white placeholder-white/60 text-sm focus:outline-none px-1"
+      />
+      <button
+        onClick={sendMessage}
+        disabled={loading || !message.trim()}
+        className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#00A3FF] text-white hover:bg-[#008EDB] transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          className="w-4 h-4"
+        >
+          <path d="M22 2L11 13" />
+          <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+)}
         </div>
       </div>
 
