@@ -1938,6 +1938,13 @@ const ChatWindow = () => {
   const [typingDots, setTypingDots] = useState("");
   const [showTip, setShowTip] = useState(true);
 
+  const [isWaitingForName, setIsWaitingForName] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [showIdSelection, setShowIdSelection] = useState(false);
+  const [pendingNumberChoice, setPendingNumberChoice] = useState<
+    "new" | "existing" | null
+  >(null);
+
   // Auto-scroll to bottom whenever chat, loading, or any panel visibility changes
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -1966,72 +1973,75 @@ const ChatWindow = () => {
     }, 500);
     return () => clearInterval(interval);
   }, [loading]);
+  const hasLoadedPlans = React.useRef(false);
 
-  useEffect(() => {
-    const fromBanner = searchParams.get("fromBanner");
-    const support = searchParams.get("support");
-    const planParam = searchParams.get("plan");
+  // useEffect(() => {
+  //   const fromBanner = searchParams.get("fromBanner");
+  //   const support = searchParams.get("support");
+  //   const planParam = searchParams.get("plan");
 
-    setShowDetailsForm(false);
-    setShowPlans(false);
-    setShowPayment(false);
-    setShowNumberButtons(false);
-    setShowNumberTypeSelection(false);
-    setShowConfirmNewNumber(false);
-    setShowExistingNumberOptions(false);
-    setShowArnInput(false);
-    setShowOtpInput(false);
-    setShowConfirmExistingNumber(false);
-    setSelectedPlan(null);
-    setSelectedSim(null);
-    setIsPorting(false);
-    setHasSelectedNumber(false);
-    setNumberDecisionMade(false);
-    setOtpVerified(false);
-    setFlowCompleted(false);
+  //   setShowDetailsForm(false);
+  //   setShowPlans(false);
+  //   setShowPayment(false);
+  //   setShowNumberButtons(false);
+  //   setShowNumberTypeSelection(false);
+  //   setShowConfirmNewNumber(false);
+  //   setShowExistingNumberOptions(false);
+  //   setShowArnInput(false);
+  //   setShowOtpInput(false);
+  //   setShowConfirmExistingNumber(false);
+  //   setSelectedPlan(null);
+  //   setSelectedSim(null);
+  //   setIsPorting(false);
+  //   setHasSelectedNumber(false);
+  //   setNumberDecisionMade(false);
+  //   setOtpVerified(false);
+  //   setFlowCompleted(false);
 
-    if (fromBanner) {
-      setShowInitialOptions(false);
-      setIsTypingEnabled(false);
-      setChat([
-        {
-          id: 1,
-          type: "bot",
-          text: "Let me help you switch to an E-sim. Please fill the form below.",
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
-      setShowDetailsForm(true);
-    } else if (support) {
-      setShowInitialOptions(false);
-      setIsTypingEnabled(true);
-      setChat([
-        {
-          id: 1,
-          type: "bot",
-          text: "Please describe your account, billing, or technical issue and I'll help you resolve it.",
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
-      setShowDetailsForm(false);
-    } else {
-      setShowInitialOptions(true);
-      setIsTypingEnabled(false);
-      setChat([]);
-    }
-  }, [searchParams]);
+  //   if (fromBanner) {
+  //     setShowInitialOptions(false);
+  //     setIsTypingEnabled(false);
+  //     setChat([
+  //       {
+  //         id: 1,
+  //         type: "bot",
+  //         text: "Let me help you switch to an E-sim. Please fill the form below.",
+  //         time: new Date().toLocaleTimeString([], {
+  //           hour: "2-digit",
+  //           minute: "2-digit",
+  //         }),
+  //       },
+  //     ]);
+  //     setShowDetailsForm(true);
+  //   } else if (support) {
+  //     setShowInitialOptions(false);
+  //     setIsTypingEnabled(true);
+  //     setChat([
+  //       {
+  //         id: 1,
+  //         type: "bot",
+  //         text: "Please describe your account, billing, or technical issue and I'll help you resolve it.",
+  //         time: new Date().toLocaleTimeString([], {
+  //           hour: "2-digit",
+  //           minute: "2-digit",
+  //         }),
+  //       },
+  //     ]);
+  //     setShowDetailsForm(false);
+  //   } else {
+  //     setShowInitialOptions(true);
+  //     setIsTypingEnabled(false);
+  //     setChat([]);
+  //   }
+  // }, [searchParams]);
 
   useEffect(() => {
     const loadPlans = async () => {
+      if (hasLoadedPlans.current) return;
+      hasLoadedPlans.current = true;
       try {
         const res = await fetch(
-          "https://backend-bele.omnisuiteai.com/api/v1/plans"
+          "https://backend-bele.omnisuiteai.com/api/v1/plans",
         );
         const data = await res.json();
         const list: Plan[] = data.data || [];
@@ -2042,26 +2052,15 @@ const ChatWindow = () => {
           const match = list.find((p) => p.planName === planParam);
           if (match) {
             setSelectedPlan(match);
-            setShowInitialOptions(false);
-            setIsTypingEnabled(false);
-            setShowDetailsForm(true);
-            setChat((prev) => {
-              if (prev.length === 0) {
-                return [
-                  {
-                    id: 1,
-                    type: "bot" as const,
-                    text: `Great choice! You selected ${match.planName} — $${match.price}. Please fill in your details below to continue.`,
-                    time: new Date().toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }),
-                  },
-                ];
-              }
-              return prev;
-            });
+            // New flow: Ask for name first
+            addBotMessage("Could I start by asking your name please?");
+            setIsWaitingForName(true);
+            setIsTypingEnabled(true);
+            setShowInitialOptions(false); // ← Don't show 3 options
+            return;
           }
+        } else {
+          setShowInitialOptions(true); // ← Show 3 options only when no plan in URL
         }
       } catch (e) {
         console.error("Failed loading plans:", e);
@@ -2156,7 +2155,7 @@ const ChatWindow = () => {
         const birthDate = new Date(
           Number(year),
           Number(month) - 1,
-          Number(day)
+          Number(day),
         );
 
         if (
@@ -2245,29 +2244,27 @@ const ChatWindow = () => {
       .join(", ");
 
     setShowDetailsForm(false);
-    if (isTransferMode) {
-      setShowExistingNumberOptions(true);
-    } else {
-      setShowNumberTypeSelection(true);
-    }
+
+    // if (isTransferMode && !pendingNumberChoice) {
+    //   setShowExistingNumberOptions(true);
+    // }
     await handleSend(formatted);
 
-    const numberMessage = isTransferMode
-      ? "Thanks! Now let's proceed with transferring your existing number. Please provide your number details below."
-      : "Thanks!, Now it's time to choose a number -- either a new number or your existing number -- from the options below.";
-
-    setChat((prev) => [
-      ...prev,
-      {
-        id: prev.length + 1,
-        type: "bot",
-        text: numberMessage,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      },
-    ]);
+    if (isTransferMode && !pendingNumberChoice) {
+      addBotMessage(
+        "Thanks! Now let's proceed with transferring your existing number. Please provide your number details below.",
+      );
+    } else if (pendingNumberChoice === "existing") {
+      setShowNumberTypeSelection(false);
+      setShowNumberButtons(false);
+      setShowExistingNumberOptions(true);
+      addBotMessage(
+        "Thanks! Now let's proceed with transferring your existing number. Please provide your number details below.",
+      );
+    } else {
+      // For new numbers, handleSend logic will automatically show the number selection buttons
+      // based on the bot's response containing 5 mobile numbers.
+    }
   };
 
   useEffect(() => {
@@ -2316,6 +2313,21 @@ const ChatWindow = () => {
 
     setChat((prev) => [...prev, userMsg]);
     setMessage("");
+
+    if (isWaitingForName) {
+      setUserName(text);
+      setIsWaitingForName(false);
+      setLoading(true);
+      await new Promise((res) => setTimeout(res, 800));
+      setLoading(false);
+      addBotMessage(
+        `Ok ${text}, let's get your eSIM setup. Do you want to keep your existing phone number or get a new one?`,
+      );
+      setShowNumberTypeSelection(true);
+      setIsTypingEnabled(false);
+      return;
+    }
+
     setLoading(true);
 
     if (text.toLowerCase().trim() === "signup") {
@@ -2414,8 +2426,14 @@ const ChatWindow = () => {
   };
 
   const handleNewNumber = () => {
+    addUserMessage("New Number");
+    setPendingNumberChoice("new");
+    setIsTransferMode(false);
     setShowNumberTypeSelection(false);
-    setShowConfirmNewNumber(true);
+    addBotMessage(
+      "Make sure you enter the phone number you want to port over and the Birth Date as per your current network. I won’t store any of this information, so don’t worry.",
+    );
+    setShowIdSelection(true);
   };
 
   const confirmNewNumber = async (yes: boolean) => {
@@ -2432,20 +2450,20 @@ const ChatWindow = () => {
     setNumberDecisionMade(false);
 
     addBotMessage(
-      "Thanks, now it's time to choose a number from the selection below."
+      "Thanks, now it's time to choose a number from the selection below.",
     );
     await handleSend("new number");
   };
 
   const handleExistingNumber = () => {
+    addUserMessage("Existing Number");
+    setPendingNumberChoice("existing");
+    setIsTransferMode(true);
     setShowNumberTypeSelection(false);
-    setShowConfirmNewNumber(false);
-    setExistingNumberType(null);
-    setShowArnInput(false);
-    setArn("");
-    setExistingPhone("");
-    setShowConfirmExistingNumber(false);
-    setShowExistingNumberOptions(true);
+    addBotMessage(
+      "Make sure you enter the phone number you want to port over and the Birth Date as per your current network. I won’t store any of this information, so don’t worry.",
+    );
+    setShowIdSelection(true);
   };
 
   const handleExistingTypeSelect = (type: "prepaid" | "postpaid") => {
@@ -2456,7 +2474,7 @@ const ChatWindow = () => {
   const handleExistingNumberSubmit = async () => {
     if (!existingPhone.match(/^04\d{8}$/)) {
       alert(
-        "Please enter a valid 10-digit Australian mobile number starting with 04"
+        "Please enter a valid 10-digit Australian mobile number starting with 04",
       );
       return;
     }
@@ -2479,7 +2497,7 @@ const ChatWindow = () => {
 
       if (!custNo) {
         addBotMessage(
-          "We're having trouble fetching your customer ID. Please try again in a moment."
+          "We're having trouble fetching your customer ID. Please try again in a moment.",
         );
         return;
       }
@@ -2490,7 +2508,7 @@ const ChatWindow = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ custNo, destination: existingPhone }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -2523,7 +2541,7 @@ const ChatWindow = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ custNo, destination: existingPhone }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -2561,11 +2579,26 @@ const ChatWindow = () => {
       }
 
       addBotMessage(
-        `Great! We'll port your existing number ${existingPhone}. Now please choose a plan.`
+        `Great! We'll port your existing number ${existingPhone}. Now please choose a plan.`,
       );
     } else {
       setShowExistingNumberOptions(true);
     }
+  };
+
+  const addUserMessage = (text: string) => {
+    setChat((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1,
+        type: "user" as const,
+        text,
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      },
+    ]);
   };
 
   const addBotMessage = (text: string) => {
@@ -2653,6 +2686,26 @@ const ChatWindow = () => {
     setShowPayment(true);
   };
 
+  const handleIdSelection = (type: string) => {
+    const label =
+      type === "DL"
+        ? "Driver License"
+        : type === "PA"
+          ? "Passport"
+          : type === "PI"
+            ? "Proof of Age Card"
+            : "Pensioner Card";
+    addUserMessage(label);
+    setFormData((prev) => ({ ...prev, custAuthorityType: type }));
+    setShowIdSelection(false);
+    if (selectedPlan) {
+      addBotMessage(
+        `You selected plan ${selectedPlan.planName} — $${selectedPlan.price}. Let’s continue with your setup.`,
+      );
+    }
+    setShowDetailsForm(true);
+  };
+
   const handleOtpVerify = async () => {
     if (otpCode.length !== 6) {
       alert("Please enter a 6-digit OTP");
@@ -2668,7 +2721,7 @@ const ChatWindow = () => {
             code: otpCode,
             transactionId: otpTransactionId,
           }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -2682,7 +2735,7 @@ const ChatWindow = () => {
       setOtpVerified(true);
       setShowOtpInput(false);
       addBotMessage(
-        "OTP verified successfully! Please choose a plan to continue."
+        "OTP verified successfully! Please choose a plan to continue.",
       );
       if (!selectedPlan) {
         setShowPlans(true);
@@ -2714,7 +2767,7 @@ const ChatWindow = () => {
 
     if (!storedCustNo) {
       addBotMessage(
-        "You need to sign up or log in first before deleting your account."
+        "You need to sign up or log in first before deleting your account.",
       );
       return;
     }
@@ -2729,6 +2782,7 @@ const ChatWindow = () => {
   };
 
   const handleActivateOrder = async () => {
+    setLoading(true);
     try {
       const isPorting =
         existingNumberType === "prepaid" || existingNumberType === "postpaid";
@@ -2790,7 +2844,8 @@ const ChatWindow = () => {
       ]);
       setFlowCompleted(true);
       setShowInitialOptions(false);
-      setIsTypingEnabled(false);
+      setIsTypingEnabled(true);
+      setLoading(false);
     } catch (err) {
       console.error("Activation error:", err);
 
@@ -2832,16 +2887,23 @@ const ChatWindow = () => {
     setChat((prev) => [...prev, userMsg]);
 
     if (option === "Buy an eSIM") {
+      addBotMessage("Could I start by asking your name please?");
+      setIsWaitingForName(true);
+      setIsTypingEnabled(true);
+    } else if (option === "transfer-number") {
+      setIsTransferMode(true);
+      setPendingNumberChoice("existing");
+      setShowTip(true);
       await handleSend("signup");
     } else if (option === "Account, billing or Technical Problem") {
       setIsTypingEnabled(true);
       addBotMessage(
-        "Please describe your account, billing, or technical issue and I'll help you resolve it."
+        "Please describe your account, billing, or technical issue and I'll help you resolve it.",
       );
-    } else if (option === "transfer-number") {
-      setIsTransferMode(true);
-      setShowTip(true);
-      await handleSend("signup");
+      // } else if (option === "transfer-number") {
+      //   setIsTransferMode(true);
+      //   setShowTip(true);
+      //   await handleSend("signup");
     }
   };
 
@@ -2888,7 +2950,6 @@ const ChatWindow = () => {
         doesn't clip behind a shorter nav.
       */}
       <div className="absolute top-20 sm:top-28 inset-x-0 bottom-0 z-10 flex flex-col bg-white/10 backdrop-blur-xl border-t border-white/20 shadow-2xl overflow-hidden">
-
         {/* ── Header ──────────────────────────────────────────────────────── */}
         <header className="flex items-center justify-between px-4 py-3 bg-white shadow-md shrink-0">
           {/* Logo / brand placeholder */}
@@ -2906,7 +2967,6 @@ const ChatWindow = () => {
 
         {/* ── Scrollable message area ──────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto overscroll-contain scroll-smooth px-3 sm:px-5 md:px-8 py-4 space-y-1">
-
           {/* Title */}
           <div className="text-center mb-4 mt-2">
             <h2 className="text-white font-semibold text-base sm:text-lg drop-shadow-sm">
@@ -2917,9 +2977,8 @@ const ChatWindow = () => {
           {/* Selected plan banner */}
           {selectedPlan && (
             <div className="mb-3 bg-white/20 border border-white/30 text-white text-center text-sm px-3 py-2 rounded-xl shadow-md">
-              You selected{" "}
-              <strong>{selectedPlan.planName}</strong> — ${selectedPlan.price}.
-              Let's continue with your setup.
+              You selected <strong>{selectedPlan.planName}</strong> — $
+              {selectedPlan.price}. Let's continue with your setup.
             </div>
           )}
 
@@ -3007,7 +3066,6 @@ const ChatWindow = () => {
 
         {/* ── Bottom action panels ─────────────────────────────────────────── */}
         <div className="shrink-0 px-3 sm:px-5 md:px-8 pb-safe-bottom pb-3 space-y-2">
-
           {/* ── Details form ─────────────────────────────────────────────── */}
           {showDetailsForm && (
             <form
@@ -3293,7 +3351,7 @@ const ChatWindow = () => {
           )}
 
           {/* ── Number type selection ─────────────────────────────────────── */}
-          {showNumberTypeSelection && !isTransferMode && (
+          {showNumberTypeSelection && !isTransferMode && !pendingNumberChoice && (
             <div className={`${panelBase} p-4 text-center`}>
               <p className="text-white text-sm sm:text-base mb-3 font-medium">
                 Do you want a new number or keep your existing one?
@@ -3368,7 +3426,7 @@ const ChatWindow = () => {
                     value={existingPhone}
                     onChange={(e) =>
                       setExistingPhone(
-                        e.target.value.replace(/\D/g, "").substring(0, 10)
+                        e.target.value.replace(/\D/g, "").substring(0, 10),
                       )
                     }
                     placeholder="Enter your number (04xxxxxxxx)"
@@ -3434,7 +3492,7 @@ const ChatWindow = () => {
             </div>
           )}
 
-          {/* ── Number picker buttons ─────────────────────────────────────── */}
+          {/* ── Number / ID / Plan selection panels ───────────────────────────── */}
           {showNumberButtons && numberOptions.length > 0 && (
             <div
               className={`${panelBase} p-3 sm:p-4 flex flex-wrap gap-2 justify-center`}
@@ -3452,7 +3510,29 @@ const ChatWindow = () => {
             </div>
           )}
 
-          {/* ── Plan selector ─────────────────────────────────────────────── */}
+          {showIdSelection && (
+            <div className="flex flex-wrap gap-2 p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/30 justify-center">
+              <button
+                onClick={() => handleIdSelection("DL")}
+                className="bg-gradient-to-r from-blue-600 to-teal-500 text-white px-4 py-2 rounded hover:opacity-90 text-sm font-medium"
+              >
+                Driver License
+              </button>
+              <button
+                onClick={() => handleIdSelection("PA")}
+                className="bg-gradient-to-r from-blue-600 to-teal-500 text-white px-4 py-2 rounded hover:opacity-90 text-sm font-medium"
+              >
+                Passport
+              </button>
+              <button
+                onClick={() => handleIdSelection("PI")}
+                className="bg-gradient-to-r from-blue-600 to-teal-500 text-white px-4 py-2 rounded hover:opacity-90 text-sm font-medium"
+              >
+                Proof of Age Card
+              </button>
+            </div>
+          )}
+
           {showPlans && !selectedPlan && plans.length > 0 && (
             <div
               className={`${panelBase} p-3 sm:p-4 flex flex-wrap gap-2 justify-center`}
@@ -3482,9 +3562,7 @@ const ChatWindow = () => {
                 inputMode="numeric"
                 maxLength={6}
                 value={otpCode}
-                onChange={(e) =>
-                  setOtpCode(e.target.value.replace(/\D/g, ""))
-                }
+                onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
                 className={`${inputBase} text-center text-lg tracking-[0.4em] max-w-xs font-mono`}
                 placeholder="● ● ● ● ● ●"
                 autoFocus
@@ -3536,42 +3614,44 @@ const ChatWindow = () => {
                 }}
               />
             )}
-        </div>
 
-        {/* ── Typing input bar ──────────────────────────────────────────────── */}
-        {isTypingEnabled && !flowCompleted && (
-          <div className="shrink-0 w-full px-3 sm:px-5 pb-3 sm:pb-4 pt-2 border-t border-white/10">
-            <div className="flex items-center gap-2 border border-white/20 rounded-full px-4 py-2 sm:py-2.5 bg-white/15 backdrop-blur-md shadow-2xl">
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage()}
-                placeholder="Message…"
-                disabled={loading}
-                className="flex-1 min-w-0 bg-transparent text-white placeholder-white/60 text-sm sm:text-base focus:outline-none"
-              />
-              <button
-                onClick={sendMessage}
-                disabled={loading || !message.trim()}
-                aria-label="Send message"
-                className="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#00A3FF] hover:bg-[#008EDB] transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center active:scale-90"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="w-4 h-4 sm:w-5 sm:h-5 text-white"
+          {/* ── Message Input (only when typing is enabled) ─────────────────── */}
+          {isTypingEnabled && !showPayment && (
+            <div className="shrink-0 w-full px-3 sm:px-5 pb-3 sm:pb-4 pt-2 border-t border-white/10">
+              <div className="flex items-center gap-2 border border-white/20 rounded-full px-4 py-2 sm:py-2.5 bg-white/15 backdrop-blur-md shadow-2xl">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && !e.shiftKey && sendMessage()
+                  }
+                  placeholder="Message…"
+                  disabled={loading}
+                  className="flex-1 min-w-0 bg-transparent text-white placeholder-white/60 text-sm sm:text-base focus:outline-none"
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={loading || !message.trim()}
+                  aria-label="Send message"
+                  className="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#00A3FF] hover:bg-[#008EDB] transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center active:scale-90"
                 >
-                  <path d="M22 2L11 13" />
-                  <path d="M22 2l-7 20-4-9-9-4 20-7z" />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-white"
+                  >
+                    <path d="M22 2L11 13" />
+                    <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* ── Delete confirmation modal ──────────────────────────────────────── */}
