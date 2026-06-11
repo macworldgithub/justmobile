@@ -33,6 +33,11 @@ export const LoginApi = createAsyncThunk<
     if (custNo) {
       localStorage.setItem("custNo", custNo);
     }
+    
+    // Save user data for chatbot
+    if (meRes.data) {
+      localStorage.setItem("userData", JSON.stringify(meRes.data));
+    }
 
     return {
       ...loginRes.data,

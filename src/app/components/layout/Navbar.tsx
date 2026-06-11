@@ -287,6 +287,13 @@ export const Navbar: React.FC = () => {
                 className="text-gray-500 hover:text-[#231e20] font-medium"
               />
             ))}
+            {isLoggedIn && (
+              <Link
+                href="/chat-window?manageAccount=true"
+                label="Manage Accounts"
+                className="text-gray-500 hover:text-[#231e20] font-medium"
+              />
+            )}
           </nav>
 
           {/* Right Buttons */}
@@ -336,6 +343,13 @@ export const Navbar: React.FC = () => {
                     className="block text-lg font-medium text-gray-800 hover:text-indigo-600 transition-colors py-2"
                   />
                 ))}
+                {isLoggedIn && (
+                  <Link
+                    href="/chat-window?manageAccount=true"
+                    label="Manage Accounts"
+                    className="block text-lg font-medium text-gray-800 hover:text-indigo-600 transition-colors py-2"
+                  />
+                )}
 
                 {/* 2. Divider */}
                 <div className="border-t border-gray-200" />
