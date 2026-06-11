@@ -134,11 +134,15 @@ const ChatWindow = () => {
           if (userDataStr) {
             try {
               const userData = JSON.parse(userDataStr);
-              addBotMessage(`Welcome back, ${userData.user?.name || "User"}! What data would you like to retrieve? (e.g. User Details, Plans, Status, etc.)`);
+              addBotMessage(
+                `Welcome back, ${userData.user?.name || "User"}! What data would you like to retrieve? (e.g. User Details, Plans, Status, etc.)`,
+              );
               setIsTypingEnabled(true);
               setShowInitialOptions(false);
             } catch (e) {
-              addBotMessage("Welcome back! What data would you like to retrieve?");
+              addBotMessage(
+                "Welcome back! What data would you like to retrieve?",
+              );
               setIsTypingEnabled(true);
               setShowInitialOptions(false);
             }
@@ -443,13 +447,21 @@ const ChatWindow = () => {
         try {
           const userData = JSON.parse(userDataStr);
           const lowerText = text.toLowerCase();
-          let responseText = "I'm not sure how to answer that from your account details. You can ask about your User Details, Plan, or Status.";
-          if (lowerText.includes("user") || lowerText.includes("detail") || lowerText.includes("profile")) {
+          let responseText =
+            "I'm not sure how to answer that from your account details. You can ask about your User Details, Plan, or Status.";
+          if (
+            lowerText.includes("user") ||
+            lowerText.includes("detail") ||
+            lowerText.includes("profile")
+          ) {
             responseText = `User Details:\nName: ${userData.user?.name}\nEmail: ${userData.user?.email}\nAddress: ${userData.user?.street}, ${userData.user?.suburb}, ${userData.user?.state} ${userData.user?.postcode}`;
           } else if (lowerText.includes("plan")) {
             responseText = `Your Plan: ${userData.user?.plan}\nSpeed: ${userData.user?.speed}\nData Limit: ${userData.user?.dataLimit}GB\nUsed: ${userData.user?.dataUsed}GB\nExpiry: ${userData.user?.expiry}`;
-          } else if (lowerText.includes("status") || lowerText.includes("account")) {
-            responseText = `Account Status: ${userData.user?.status}\nCustomer No: ${userData.user?.custNo}\nCustomer Error: ${userData.customer?.errorDescription || 'None'}`;
+          } else if (
+            lowerText.includes("status") ||
+            lowerText.includes("account")
+          ) {
+            responseText = `Account Status: ${userData.user?.status}\nCustomer No: ${userData.user?.custNo}`;
           }
           addBotMessage(responseText);
           setLoading(false);
@@ -1112,8 +1124,9 @@ const ChatWindow = () => {
           {chat.map((msg) => (
             <div
               key={msg.id}
-              className={`flex items-end gap-2 ${msg.type === "user" ? "justify-end" : "justify-start"
-                } mb-2`}
+              className={`flex items-end gap-2 ${
+                msg.type === "user" ? "justify-end" : "justify-start"
+              } mb-2`}
             >
               {msg.type === "bot" && (
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full shrink-0 overflow-hidden ring-2 ring-white/30 self-start mt-1">
@@ -1126,10 +1139,11 @@ const ChatWindow = () => {
               )}
 
               <div
-                className={`relative rounded-2xl px-3.5 py-2.5 shadow-md max-w-[85%] sm:max-w-[75%] md:max-w-[65%] ${msg.type === "user"
-                  ? "bg-white text-[#0E3B5C] rounded-br-sm"
-                  : "bg-white text-[#0E3B5C] rounded-bl-sm"
-                  }`}
+                className={`relative rounded-2xl px-3.5 py-2.5 shadow-md max-w-[85%] sm:max-w-[75%] md:max-w-[65%] ${
+                  msg.type === "user"
+                    ? "bg-white text-[#0E3B5C] rounded-br-sm"
+                    : "bg-white text-[#0E3B5C] rounded-bl-sm"
+                }`}
               >
                 <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-line">
                   {msg.text}
@@ -1463,10 +1477,11 @@ const ChatWindow = () => {
               <button
                 type="submit"
                 disabled={loading || ageError !== ""}
-                className={`mt-4 w-full py-3 text-sm sm:text-base ${ageError
-                  ? "bg-gray-500 cursor-not-allowed text-white rounded-xl"
-                  : `${gradientBtn}`
-                  } transition-all`}
+                className={`mt-4 w-full py-3 text-sm sm:text-base ${
+                  ageError
+                    ? "bg-gray-500 cursor-not-allowed text-white rounded-xl"
+                    : `${gradientBtn}`
+                } transition-all`}
               >
                 {loading ? "Submitting…" : "Submit Details"}
               </button>
@@ -1474,27 +1489,29 @@ const ChatWindow = () => {
           )}
 
           {/* ── Number type selection ─────────────────────────────────────── */}
-          {showNumberTypeSelection && !isTransferMode && !pendingNumberChoice && (
-            <div className={`${panelBase} p-4 text-center`}>
-              <p className="text-white text-sm sm:text-base mb-3 font-medium">
-                Do you want a new number or keep your existing one?
-              </p>
-              <div className="flex gap-3 justify-center flex-wrap">
-                <button
-                  onClick={handleNewNumber}
-                  className={`${blueBtn} px-5 py-2.5 text-sm`}
-                >
-                  New Number
-                </button>
-                <button
-                  onClick={handleExistingNumber}
-                  className={`${blueBtn} px-5 py-2.5 text-sm`}
-                >
-                  Existing Number
-                </button>
+          {showNumberTypeSelection &&
+            !isTransferMode &&
+            !pendingNumberChoice && (
+              <div className={`${panelBase} p-4 text-center`}>
+                <p className="text-white text-sm sm:text-base mb-3 font-medium">
+                  Do you want a new number or keep your existing one?
+                </p>
+                <div className="flex gap-3 justify-center flex-wrap">
+                  <button
+                    onClick={handleNewNumber}
+                    className={`${blueBtn} px-5 py-2.5 text-sm`}
+                  >
+                    New Number
+                  </button>
+                  <button
+                    onClick={handleExistingNumber}
+                    className={`${blueBtn} px-5 py-2.5 text-sm`}
+                  >
+                    Existing Number
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* ── Confirm new number ────────────────────────────────────────── */}
           {showConfirmNewNumber && (
@@ -1531,10 +1548,11 @@ const ChatWindow = () => {
                   <button
                     key={type}
                     onClick={() => handleExistingTypeSelect(type)}
-                    className={`px-5 py-2.5 rounded-xl text-white font-semibold text-sm transition-all active:scale-95 ${existingNumberType === type
-                      ? "bg-gradient-to-r from-blue-600 to-teal-500 ring-2 ring-white/50"
-                      : "bg-white/20 hover:bg-white/30"
-                      }`}
+                    className={`px-5 py-2.5 rounded-xl text-white font-semibold text-sm transition-all active:scale-95 ${
+                      existingNumberType === type
+                        ? "bg-gradient-to-r from-blue-600 to-teal-500 ring-2 ring-white/50"
+                        : "bg-white/20 hover:bg-white/30"
+                    }`}
                   >
                     {type.charAt(0).toUpperCase() + type.slice(1)}
                   </button>
