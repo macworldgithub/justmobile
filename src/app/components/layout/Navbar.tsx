@@ -26,10 +26,7 @@ import DeleteCustomerModal from "../AppComponents/DeleteCustomerModal";
 
 const NAV_LINKS = [
   { label: "BUY ESIM", href: "/chat-window?fromBanner=true" },
-  // { label: "MANAGE ACCOUNT", href: "/Program" },
   { label: "Support", href: "/chat-window?support=true" },
-  // { label: "About", href: "/About" },
-  // { label: "Contact", href: "/Contact" },
 ];
 
 interface AllowanceItem {
@@ -279,21 +276,23 @@ export const Navbar: React.FC = () => {
           </Link>
 
           <nav className="hidden md:flex items-center gap-6 flex-1 justify-center">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                label={link.label}
-                className="text-gray-500 hover:text-[#231e20] font-medium"
-              />
-            ))}
+            <Link
+              href="/chat-window?fromBanner=true"
+              label="BUY ESIM"
+              className="text-gray-500 hover:text-[#231e20] font-medium"
+            />
             {isLoggedIn && (
               <Link
                 href="/chat-window?manageAccount=true"
-                label="Manage Accounts"
+                label="Manage Account"
                 className="text-gray-500 hover:text-[#231e20] font-medium"
               />
             )}
+            <Link
+              href="/chat-window?support=true"
+              label="Support"
+              className="text-gray-500 hover:text-[#231e20] font-medium"
+            />
           </nav>
 
           {/* Right Buttons */}
@@ -334,22 +333,24 @@ export const Navbar: React.FC = () => {
               onClick={() => setIsOpen(false)}
             >
               <div className="px-6 py-8 space-y-6">
-                {/* 1. Main Navigation Links - Pehle aayenge */}
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    label={link.label}
-                    className="block text-lg font-medium text-gray-800 hover:text-indigo-600 transition-colors py-2"
-                  />
-                ))}
+                {/* 1. Main Navigation Links */}
+                <Link
+                  href="/chat-window?fromBanner=true"
+                  label="BUY ESIM"
+                  className="block text-lg font-medium text-gray-800 hover:text-indigo-600 transition-colors py-2"
+                />
                 {isLoggedIn && (
                   <Link
                     href="/chat-window?manageAccount=true"
-                    label="Manage Accounts"
+                    label="Manage Account"
                     className="block text-lg font-medium text-gray-800 hover:text-indigo-600 transition-colors py-2"
                   />
                 )}
+                <Link
+                  href="/chat-window?support=true"
+                  label="Support"
+                  className="block text-lg font-medium text-gray-800 hover:text-indigo-600 transition-colors py-2"
+                />
 
                 {/* 2. Divider */}
                 <div className="border-t border-gray-200" />

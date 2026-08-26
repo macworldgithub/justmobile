@@ -1,10 +1,14 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { PaymentCard } from "./PaymentCard";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatDob, formatDobToISO, isDeleteIntent } from "@/src/lib/utils";
 import sessionStorage from "redux-persist/es/storage/session";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store/reduxStore";
 
 interface Plan {
   _id: string;
@@ -15,10 +19,13 @@ interface Plan {
   isActive: boolean;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+
 const ChatWindow = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const { access_token: reduxToken } = useSelector((state: RootState) => state.login);
 
   const [chat, setChat] = useState<
     { id: number; type: "user" | "bot"; text: string; time: string }[]
@@ -56,6 +63,13 @@ const ChatWindow = () => {
     useState(false);
   const [isPorting, setIsPorting] = useState(false);
   const [hasSelectedNumber, setHasSelectedNumber] = useState(false);
+
+  // Manage Account mode
+  const [isManageAccountMode, setIsManageAccountMode] = useState(false);
+  const [manageAccountCustNo, setManageAccountCustNo] = useState<string | null>(null);
+  const [manageAccountToken, setManageAccountToken] = useState<string | null>(null);
+  const [manageAccountUserData, setManageAccountUserData] = useState<any>(null);
+  const [showAccountChips, setShowAccountChips] = useState(false);
 
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otpCode, setOtpCode] = useState("");
@@ -128,30 +142,10 @@ const ChatWindow = () => {
         const list: Plan[] = data.data || [];
         setPlans(list);
 
+        // Manage account mode is handled by a dedicated useEffect below
         const manageAccountParam = searchParams.get("manageAccount");
-        if (manageAccountParam) {
-          const userDataStr = localStorage.getItem("userData");
-          if (userDataStr) {
-            try {
-              const userData = JSON.parse(userDataStr);
-              addBotMessage(
-                `Welcome back, ${userData.user?.name || "User"}! What data would you like to retrieve? (e.g. User Details, Plans, Status, etc.)`,
-              );
-              setIsTypingEnabled(true);
-              setShowInitialOptions(false);
-            } catch (e) {
-              addBotMessage(
-                "Welcome back! What data would you like to retrieve?",
-              );
-              setIsTypingEnabled(true);
-              setShowInitialOptions(false);
-            }
-          } else {
-            addBotMessage("Please log in first to manage your account.");
-            setShowInitialOptions(false);
-          }
-          return;
-        }
+        if (manageAccountParam) return;
+
 
         const planParam = searchParams.get("plan");
         if (planParam) {
@@ -175,6 +169,62 @@ const ChatWindow = () => {
 
     loadPlans();
   }, [searchParams]);
+
+  // Separate effect for manage account — needs to re-run when reduxToken becomes available
+  useEffect(() => {
+    const manageAccountParam = searchParams.get("manageAccount");
+    if (!manageAccountParam) return;
+
+    setIsManageAccountMode(true);
+    const token = localStorage.getItem("access_token") || reduxToken;
+    const custNo = localStorage.getItem("custNo");
+
+    // Persist Redux token to localStorage for future use
+    if (reduxToken && !localStorage.getItem("access_token")) {
+      localStorage.setItem("access_token", reduxToken);
+    }
+
+    setManageAccountToken(token);
+    setManageAccountCustNo(custNo);
+
+    const userDataStr = localStorage.getItem("userData");
+    let parsedUserData: any = null;
+    if (userDataStr) {
+      try { parsedUserData = JSON.parse(userDataStr); } catch { }
+    }
+    setManageAccountUserData(parsedUserData);
+
+    const userName = parsedUserData?.user?.name || "there";
+
+    // Only show message once (when we first get a valid token+custNo)
+    if (token && custNo) {
+      setChat([]); // Clear any "please log in" message
+      setShowAccountChips(true);
+      setIsTypingEnabled(true);
+      setShowInitialOptions(false);
+      // Only add welcome if chat is empty
+      setChat([
+        {
+          id: 1,
+          type: "bot" as const,
+          text: `Hi ${userName}! I'm your account assistant. I can help you with your balance, plan details, billing charges, and account information.\n\nWhat would you like to know?`,
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    } else if (!token || !custNo) {
+      setShowInitialOptions(false);
+      setShowAccountChips(false);
+      setIsTypingEnabled(false);
+      setChat([
+        {
+          id: 1,
+          type: "bot" as const,
+          text: "Please log in first to access your account management.",
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    }
+  }, [searchParams, reduxToken]);
 
   useEffect(() => {
     if (showDetailsForm && states.length === 0) {
@@ -379,10 +429,14 @@ const ChatWindow = () => {
     sessionStorage.removeItem("userDOB");
   }, []);
 
-  const callAPI = async (text: string) => {
-    const payload = sessionId
+  const callAPI = async (text: string, overrideCustNo?: string) => {
+    const payload: any = sessionId
       ? { query: text, session_id: sessionId, brand: "Just mobile" }
       : { query: text, brand: "Just mobile" };
+
+    if (overrideCustNo) {
+      payload.custNo = overrideCustNo;
+    }
 
     try {
       const res = await fetch("/api", {
@@ -440,36 +494,24 @@ const ChatWindow = () => {
       setIsTypingEnabled(false);
     }
 
+    // ── Manage Account mode: route to the backend AI Chat ───────────────────
     const manageAccountParam = searchParams.get("manageAccount");
-    if (manageAccountParam) {
-      const userDataStr = localStorage.getItem("userData");
-      if (userDataStr) {
-        try {
-          const userData = JSON.parse(userDataStr);
-          const lowerText = text.toLowerCase();
-          let responseText =
-            "I'm not sure how to answer that from your account details. You can ask about your User Details, Plan, or Status.";
-          if (
-            lowerText.includes("user") ||
-            lowerText.includes("detail") ||
-            lowerText.includes("profile")
-          ) {
-            responseText = `User Details:\nName: ${userData.user?.name}\nEmail: ${userData.user?.email}\nAddress: ${userData.user?.street}, ${userData.user?.suburb}, ${userData.user?.state} ${userData.user?.postcode}`;
-          } else if (lowerText.includes("plan")) {
-            responseText = `Your Plan: ${userData.user?.plan}\nSpeed: ${userData.user?.speed}\nData Limit: ${userData.user?.dataLimit}GB\nUsed: ${userData.user?.dataUsed}GB\nExpiry: ${userData.user?.expiry}`;
-          } else if (
-            lowerText.includes("status") ||
-            lowerText.includes("account")
-          ) {
-            responseText = `Account Status: ${userData.user?.status}\nCustomer No: ${userData.user?.custNo}`;
-          }
-          addBotMessage(responseText);
-          setLoading(false);
-          return;
-        } catch (e) {
-          console.error(e);
+    if (manageAccountParam && isManageAccountMode) {
+      setShowAccountChips(false);
+      try {
+        const data = await callAPI(text, manageAccountCustNo || undefined);
+        if (data?.message) {
+          addBotMessage(data.message);
+        } else {
+          addBotMessage("I couldn't retrieve that information right now.");
         }
+        setShowAccountChips(true);
+      } catch {
+        addBotMessage("Something went wrong. Please try again.");
+        setShowAccountChips(true);
       }
+      setLoading(false);
+      return;
     }
 
     if (isDeleteIntent(text)) {
@@ -1124,9 +1166,8 @@ const ChatWindow = () => {
           {chat.map((msg) => (
             <div
               key={msg.id}
-              className={`flex items-end gap-2 ${
-                msg.type === "user" ? "justify-end" : "justify-start"
-              } mb-2`}
+              className={`flex items-end gap-2 ${msg.type === "user" ? "justify-end" : "justify-start"
+                } mb-2`}
             >
               {msg.type === "bot" && (
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full shrink-0 overflow-hidden ring-2 ring-white/30 self-start mt-1">
@@ -1139,15 +1180,22 @@ const ChatWindow = () => {
               )}
 
               <div
-                className={`relative rounded-2xl px-3.5 py-2.5 shadow-md max-w-[85%] sm:max-w-[75%] md:max-w-[65%] ${
-                  msg.type === "user"
-                    ? "bg-white text-[#0E3B5C] rounded-br-sm"
-                    : "bg-white text-[#0E3B5C] rounded-bl-sm"
-                }`}
+                className={`relative rounded-2xl px-3.5 py-2.5 shadow-md max-w-[85%] sm:max-w-[75%] md:max-w-[65%] ${msg.type === "user"
+                  ? "bg-white text-[#0E3B5C] rounded-br-sm"
+                  : "bg-white text-[#0E3B5C] rounded-bl-sm"
+                  }`}
               >
-                <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-line">
-                  {msg.text}
-                </p>
+                {msg.type === "bot" ? (
+                  <div className="text-xs sm:text-sm leading-relaxed break-words markdown-body prose prose-sm max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0.5 prose-strong:text-[#0E3B5C] prose-a:text-blue-500 hover:prose-a:text-blue-600 prose-headings:text-[#0E3B5C] prose-headings:font-bold">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.text}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-line">
+                    {msg.text}
+                  </p>
+                )}
                 <span className="block text-right text-[10px] text-gray-400 mt-1">
                   {msg.time}
                 </span>
@@ -1195,6 +1243,94 @@ const ChatWindow = () => {
                   {label}
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* ── Manage Account quick-action chips ──────────────────────────── */}
+          {showAccountChips && isManageAccountMode && (
+            <div className={`${panelBase} p-4 mt-3`}>
+              <p className="text-white/80 text-xs sm:text-sm mb-3 text-center font-medium tracking-wide uppercase">
+                Quick Actions
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {[
+                  {
+                    icon: (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" />
+                      </svg>
+                    ),
+                    label: "Check Balance",
+                    query: "Check my data balance and remaining usage",
+                  },
+                  {
+                    icon: (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12.01" y2="18" />
+                      </svg>
+                    ),
+                    label: "My Plan",
+                    query: "Show my current plan and service details",
+                  },
+                  {
+                    icon: (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+                      </svg>
+                    ),
+                    label: "Account Details",
+                    query: "Show my account profile and details",
+                  },
+                  {
+                    icon: (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+                      </svg>
+                    ),
+                    label: "Unbilled Charges",
+                    query: "Show my current unbilled charges and call summary",
+                  },
+                  {
+                    icon: (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                      </svg>
+                    ),
+                    label: "Order History",
+                    query: "Show my recent orders and activations",
+                  },
+                  // {
+                  //   icon: (
+                  //     <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  //       <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+                  //     </svg>
+                  //   ),
+                  //   label: "Resend Welcome Email",
+                  //   query: "Please resend my welcome email",
+                  // },
+                  {
+                    icon: (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M9 21V9" />
+                      </svg>
+                    ),
+                    label: "Account Overview",
+                    query: "Give me a full overview of my account including balance, plan, and unbilled charges",
+                  },
+                ].map(({ icon, label, query }) => (
+                  <button
+                    key={label}
+                    onClick={() => {
+                      handleSend(query);
+                    }}
+                    disabled={loading}
+                    className="flex items-center gap-1.5 px-3 py-2 text-xs sm:text-sm rounded-xl bg-white/15 hover:bg-white/25 text-white font-medium transition-all active:scale-95 border border-white/20 disabled:opacity-50 shadow-sm"
+                  >
+                    {icon}
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -1477,11 +1613,10 @@ const ChatWindow = () => {
               <button
                 type="submit"
                 disabled={loading || ageError !== ""}
-                className={`mt-4 w-full py-3 text-sm sm:text-base ${
-                  ageError
-                    ? "bg-gray-500 cursor-not-allowed text-white rounded-xl"
-                    : `${gradientBtn}`
-                } transition-all`}
+                className={`mt-4 w-full py-3 text-sm sm:text-base ${ageError
+                  ? "bg-gray-500 cursor-not-allowed text-white rounded-xl"
+                  : `${gradientBtn}`
+                  } transition-all`}
               >
                 {loading ? "Submitting…" : "Submit Details"}
               </button>
@@ -1548,11 +1683,10 @@ const ChatWindow = () => {
                   <button
                     key={type}
                     onClick={() => handleExistingTypeSelect(type)}
-                    className={`px-5 py-2.5 rounded-xl text-white font-semibold text-sm transition-all active:scale-95 ${
-                      existingNumberType === type
-                        ? "bg-gradient-to-r from-blue-600 to-teal-500 ring-2 ring-white/50"
-                        : "bg-white/20 hover:bg-white/30"
-                    }`}
+                    className={`px-5 py-2.5 rounded-xl text-white font-semibold text-sm transition-all active:scale-95 ${existingNumberType === type
+                      ? "bg-gradient-to-r from-blue-600 to-teal-500 ring-2 ring-white/50"
+                      : "bg-white/20 hover:bg-white/30"
+                      }`}
                   >
                     {type.charAt(0).toUpperCase() + type.slice(1)}
                   </button>

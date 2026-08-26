@@ -33,7 +33,10 @@ export const LoginApi = createAsyncThunk<
     if (custNo) {
       localStorage.setItem("custNo", custNo);
     }
-    
+
+    // Save access_token for components that can't access Redux (e.g. ChatWindow)
+    localStorage.setItem("access_token", access_token);
+
     // Save user data for chatbot
     if (meRes.data) {
       localStorage.setItem("userData", JSON.stringify(meRes.data));
