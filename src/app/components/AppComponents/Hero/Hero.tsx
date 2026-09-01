@@ -80,7 +80,7 @@ const Hero: React.FC<HeroProps> = ({
                     />
                   ))}
                 </div> */}
-                <span>{userCount}</span>
+                {/* <span>{userCount}</span> */}
               </div>
             </motion.div>
           </div>
