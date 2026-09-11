@@ -82,9 +82,9 @@ export const Login = () => {
 
               <div className="space-y-5">
                 <FormInput
-                  label="Email"
-                  type="email"
-                  placeholder="you@example.com"
+                  label="Customer Number"
+                  type="text"
+                  placeholder="512345"
                   value={email}
                   onChange={(e) => dispatch(setEmail(e.target.value))}
                   icon={<Mail size={18} color="black" />}

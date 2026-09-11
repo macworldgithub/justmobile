@@ -257,9 +257,9 @@ export default function ForgotPassword() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <FormInput
-              label="Email Address"
-              type="email"
-              placeholder="you@example.com"
+              label="Customer Number"
+              type="text"
+              placeholder="512345"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -274,11 +274,10 @@ export default function ForgotPassword() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`flex items-center gap-3 p-4 rounded-lg border text-sm font-medium ${
-                  status === "success"
-                    ? "bg-green-500/20 border-green-500/50 text-green-100"
-                    : "bg-red-500/20 border-red-500/50 text-red-100"
-                }`}
+                className={`flex items-center gap-3 p-4 rounded-lg border text-sm font-medium ${status === "success"
+                  ? "bg-green-500/20 border-green-500/50 text-green-100"
+                  : "bg-red-500/20 border-red-500/50 text-red-100"
+                  }`}
               >
                 {status === "success" ? (
                   <CheckCircle size={20} />
