@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, KeyRound, X, AlertCircle } from "lucide-react";
+import { Mail, User, KeyRound, X, AlertCircle } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../UIComponents/Button";
 import { FormInput } from "../UIComponents/FormInput";
@@ -87,7 +87,7 @@ export const Login = () => {
                   placeholder="512345"
                   value={email}
                   onChange={(e) => dispatch(setEmail(e.target.value))}
-                  icon={<Mail size={18} color="black" />}
+                  icon={<User size={18} color="black" />}
                 />
 
                 <FormInput

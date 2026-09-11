@@ -145,7 +145,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, X, CheckCircle, AlertCircle } from "lucide-react";
+import { Mail, User, X, CheckCircle, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "../UIComponents/Button";
 import { FormInput } from "../UIComponents/FormInput";
@@ -265,7 +265,7 @@ export default function ForgotPassword() {
                 setEmail(e.target.value);
                 setStatus("idle");
               }}
-              icon={<Mail size={18} color="white" />}
+              icon={<User size={18} color="white" />}
               required
             />
 
