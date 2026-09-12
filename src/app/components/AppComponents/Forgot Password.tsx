@@ -152,7 +152,8 @@ import { FormInput } from "../UIComponents/FormInput";
 import { motion } from "framer-motion";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
+  const [custNo, setCustNo] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -161,9 +162,14 @@ export default function ForgotPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic email format validation
+    if (!custNo.trim()) {
+      setStatus("error");
+      setMessage("Please enter your Customer Number");
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
+    if (!emailAddress || !emailRegex.test(emailAddress.trim())) {
       setStatus("error");
       setMessage("Please enter a valid email address");
       return;
@@ -183,7 +189,8 @@ export default function ForgotPassword() {
             accept: "*/*",
           },
           body: JSON.stringify({
-            identifier: email.trim(),
+            identifier: custNo.trim(),
+            email: emailAddress.trim(),
           }),
         },
       );
@@ -192,28 +199,12 @@ export default function ForgotPassword() {
 
       if (!res.ok) {
         setStatus("error");
-        setMessage(data.message || "This email is not registered");
+        setMessage(data.message || "Failed to reset PIN");
         return;
       }
 
-      if (data.message && typeof data.message === "string") {
-        const msg = data.message.toLowerCase();
-
-        if (
-          msg.includes("not found") ||
-          msg.includes("exist") ||
-          msg.includes("invalid")
-        ) {
-          setStatus("error");
-          setMessage("This email is not registered with us");
-        } else {
-          setStatus("success");
-          setMessage("New PIN sent to your email!");
-        }
-      } else {
-        setStatus("success");
-        setMessage("New PIN sent to your email!");
-      }
+      setStatus("success");
+      setMessage("New PIN sent to your email!");
     } catch (err) {
       setStatus("error");
       setMessage("Network error. Please try again later.");
@@ -252,20 +243,33 @@ export default function ForgotPassword() {
             Forgot PIN?
           </h2>
           <p className="text-white/70 text-center text-sm mb-8">
-            Enter your registered email to receive a new PIN
+            Enter your Customer Number and Email address to receive a new PIN
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <FormInput
               label="Customer Number"
               type="text"
-              placeholder="512345"
-              value={email}
+              placeholder="e.g. 504026"
+              value={custNo}
               onChange={(e) => {
-                setEmail(e.target.value);
+                setCustNo(e.target.value);
                 setStatus("idle");
               }}
               icon={<User size={18} color="white" />}
+              required
+            />
+
+            <FormInput
+              label="Email Address"
+              type="email"
+              placeholder="you@example.com"
+              value={emailAddress}
+              onChange={(e) => {
+                setEmailAddress(e.target.value);
+                setStatus("idle");
+              }}
+              icon={<Mail size={18} color="white" />}
               required
             />
 
@@ -291,7 +295,7 @@ export default function ForgotPassword() {
             <Button
               type="submit"
               className="w-full text-lg py-6"
-              disabled={loading || !email}
+              disabled={loading || !custNo || !emailAddress}
               variant="outline"
             >
               {loading ? "Sending..." : "Send New PIN"}

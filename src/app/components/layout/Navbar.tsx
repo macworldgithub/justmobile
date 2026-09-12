@@ -47,6 +47,7 @@ export const Navbar: React.FC = () => {
 
   const [oldPin, setOldPin] = useState("");
   const [newPin, setNewPin] = useState("");
+  const [pinEmail, setPinEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -220,7 +221,7 @@ export const Navbar: React.FC = () => {
               access_token || localStorage.getItem("access_token")
             }`,
           },
-          body: JSON.stringify({ oldPin, newPin }),
+          body: JSON.stringify({ oldPin, newPin, email: pinEmail }),
         },
       );
 
@@ -233,6 +234,7 @@ export const Navbar: React.FC = () => {
           setShowChangePin(false);
           setOldPin("");
           setNewPin("");
+          setPinEmail("");
           setStatus("idle");
         }, 2000);
       } else {
@@ -665,6 +667,13 @@ export const Navbar: React.FC = () => {
                   placeholder="••••"
                   maxLength={6}
                   required
+                />
+                <FormInput
+                  label="Email Address (for confirmation)"
+                  type="email"
+                  value={pinEmail}
+                  onChange={(e) => setPinEmail(e.target.value)}
+                  placeholder="you@example.com"
                 />
 
                 {status !== "idle" && (
