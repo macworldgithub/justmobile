@@ -38,7 +38,7 @@ export default function LegalDocLayout({
           </Link>
           <button
             onClick={handlePrint}
-            className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors bg-white px-3 py-1.5 rounded-md shadow-sm border border-gray-200"
+            className="inline-flex items-center text-sm font-medium text-white transition-colors bg-[#231F20] hover:bg-[#332d2f] px-3.5 py-1.5 rounded-lg shadow-sm print:hidden"
           >
             <Printer size={16} className="mr-2" />
             Print to PDF
@@ -48,9 +48,9 @@ export default function LegalDocLayout({
         {/* Document Container */}
         <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-gray-800 to-gray-900 px-8 py-12 text-white">
+          <div className="bg-[#231F20] px-8 py-12 text-white print:bg-[#231F20] print:text-white [print-color-adjust:exact] [-webkit-print-color-adjust:exact]">
             <h1 className="text-3xl font-bold tracking-tight mb-6">{title}</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-200">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-300">
               <div>
                 <span className="block font-semibold text-white/70 text-xs uppercase tracking-wider mb-1">
                   Effective Date

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import {
   Download,
   ExternalLink,
@@ -121,12 +121,12 @@ const LEGAL_DOCS: LegalDoc[] = [
 // ---------------------------------------------------------------------------
 // Fade-up animation variant (reused throughout)
 // ---------------------------------------------------------------------------
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" },
+    transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" as const },
   }),
 };
 
@@ -159,7 +159,7 @@ function CisRow({ plan, index }: { plan: Plan; index: number }) {
   const href = "/legals/critical-information-summary";
   const dataMatch = plan.planName.match(/(\d+\s*GB)/i);
   const dataAmount = dataMatch ? dataMatch[0].replace(/\s/g, "") : null;
-  const color = "#3277df";
+  const color = "#231F20";
 
   return (
     <motion.li
@@ -191,12 +191,12 @@ function CisRow({ plan, index }: { plan: Plan; index: number }) {
         target="_blank"
         rel="noopener noreferrer"
         className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all"
-        style={{ background: "#1a283b" }}
+        style={{ background: "#231F20" }}
         onMouseEnter={(e) =>
-          ((e.currentTarget as HTMLElement).style.background = "#1a283b")
+          ((e.currentTarget as HTMLElement).style.background = "#332d2f")
         }
         onMouseLeave={(e) =>
-          ((e.currentTarget as HTMLElement).style.background = "#1a283b")
+          ((e.currentTarget as HTMLElement).style.background = "#231F20")
         }
         aria-label={`View Critical Information Summary for ${plan.planName}`}
       >
@@ -288,12 +288,12 @@ export default function LegalsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: "#f8f7ff" }}>
+    <div className="min-h-screen" style={{ background: "#f8f9fa" }}>
       {/* ------------------------------------------------------------------ */}
       {/* HERO                                                                */}
       {/* ------------------------------------------------------------------ */}
       <section
-        className="relative overflow-hidden py-20 px-6 bg-gradient-to-r from-gray-800 to-gray-900"
+        className="relative overflow-hidden py-20 px-6 bg-[#231F20]"
       >
         {/* Decorative blobs */}
         <div
@@ -319,22 +319,13 @@ export default function LegalsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block text-xs font-semibold tracking-widest uppercase text-blue-300 mb-4">
+            <span className="inline-block text-xs font-semibold tracking-widest uppercase text-blue-400 mb-4">
               Compliance &amp; Transparency
             </span>
             <h1 className="text-xl sm:text-3xl font-bold text-white mb-5 leading-tight">
-              Legal &amp; Compliance{" "}
-              <span
-                className="text-white bg-clip-text"
-              // style={{
-              //   backgroundImage:
-              //     "linear-gradient(90deg, #8b96faff, #7c89f4ff)",
-              // }}
-              >
-                Documents
-              </span>
+              Legal &amp; Compliance Documents
             </h1>
-            <p className="text-md text-blue-100 max-w-2xl leading-relaxed">
+            <p className="text-md text-gray-300 max-w-2xl leading-relaxed">
               Just Mobile is committed to transparency. Every plan comes with a
               Critical Information Summary (CIS) — a plain-English document that
               sets out exactly what's included, what it costs, and how to leave.
@@ -350,8 +341,8 @@ export default function LegalsPage() {
               ].map((pill) => (
                 <span
                   key={pill}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-1.5 rounded-full text-blue-100"
-                  style={{ background: "rgba(50,119,223,0.25)", border: "1px solid rgba(139,150,250,0.3)" }}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-1.5 rounded-full text-gray-200"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
                 >
                   <svg
                     width="12"
@@ -433,7 +424,7 @@ export default function LegalsPage() {
             <div className="flex items-center gap-3 mb-2">
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center"
-                style={{ background: "#7C3AED18", color: "#3277dfff" }}
+                style={{ background: "#3277df18", color: "#3277df" }}
               >
                 <Smartphone size={18} />
               </div>
@@ -481,7 +472,7 @@ export default function LegalsPage() {
             className="mb-10"
           >
             <span className="text-xs font-semibold tracking-widest uppercase text-blue-600">
-             // Legal Documents
+              Legal Documents
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mt-2">
               Other Compliance Documents
@@ -502,7 +493,7 @@ export default function LegalsPage() {
 
       {/* CONTACT / NEED HELP STRIP */}
       <section
-        className="py-14 px-6 bg-gradient-to-r from-gray-800 to-gray-900"
+        className="py-14 px-6 bg-[#231F20]"
       >
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
@@ -514,7 +505,7 @@ export default function LegalsPage() {
             <h2 className="text-2xl font-bold text-white mb-3">
               Can't find what you're looking for?
             </h2>
-            <p className="text-blue-200 text-sm mb-7 max-w-md mx-auto">
+            <p className="text-gray-300 text-sm mb-7 max-w-md mx-auto">
               Our support team is available to answer any questions about your
               plan, our policies, or your consumer rights.
             </p>
@@ -529,7 +520,7 @@ export default function LegalsPage() {
               </a>
               <a
                 href="mailto:support@justmobile.com.au"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-blue-100 border border-blue-400/40 hover:border-blue-300 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-gray-200 border border-white/20 hover:border-white/40 hover:text-white transition-all"
               >
                 Email Us
               </a>
