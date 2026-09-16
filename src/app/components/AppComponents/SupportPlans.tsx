@@ -110,11 +110,10 @@ export default function SupportPlans() {
           return (
             <div
               key={plan._id}
-              className={`rounded-2xl p-6 flex flex-col items-center shadow-sm transition hover:shadow-md  ${
-                plan.network === "5G"
-                  ? "bg-[#c8cace] scale-[1.03] border-2 border-gray-200 text-white"
-                  : "bg-[#c8cace] scale-[1.03] border border-gray-200 text-white"
-              }`}
+              className={`rounded-2xl p-6 flex flex-col items-center shadow-sm transition hover:shadow-md  ${plan.network === "5G"
+                ? "bg-[#c8cace] scale-[1.03] border-2 border-gray-200 text-white"
+                : "bg-[#c8cace] scale-[1.03] border border-gray-200 text-white"
+                }`}
             >
               <Text className="mb-1 text-white bg-[#1a283b] rounded-xl px-4">
                 {dataAmount}
@@ -153,6 +152,17 @@ export default function SupportPlans() {
                   </li>
                 </ul>
               </div>
+
+              {/* CIS link — compliance requirement */}
+              <a
+                href="/legals/critical-information-summary"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 text-xs text-center text-gray-700 hover:text-gray-900 underline underline-offset-2 transition-colors"
+                aria-label={`View Critical Information Summary for ${plan.planName}`}
+              >
+                Critical Information Summary
+              </a>
             </div>
           );
         })}

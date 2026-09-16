@@ -29,7 +29,7 @@ export default function RootLayout({
         <ReduxProvider>
           <Navbar />
           <main className="grow">{children}</main>
-          {/* <Footer /> */}
+          <Footer />
           <FloatingChatButton />
         </ReduxProvider>
       </body>

@@ -8,7 +8,7 @@ import { Facebook, Twitter, Instagram } from "lucide-react";
 const Footer = () => {
     return (
         <footer className="w-full  text-black py-16 px-6 sm:px-10 md:px-16">
-            <div className="max-w-[1400px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
+            <div className="max-w-[1400px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12">
                 <div className="flex flex-col gap-4">
                     <motion.img
                         src="/images/logo.png"
@@ -94,12 +94,50 @@ const Footer = () => {
                         </Text>
                     </div>
                 </div>
+
+                {/* Legal & Compliance column */}
+                <div className="flex flex-col">
+                    <Heading title="Legal" level={6} className="text-black mb-4" />
+                    <div className="flex flex-col gap-3">
+                        <Link
+                            href="/legals"
+                            label="Legal & Compliance"
+                            className="text-gray-700  hover:text-blue-600 transition-colors"
+                        />
+                        <Link
+                            href="/legals#critical-information-summaries"
+                            label="Critical Information Summaries"
+                            className="text-gray-700 hover:text-blue-600 transition-colors"
+                        />
+                        <Link
+                            href="/legals#privacy-policy"
+                            label="Privacy Policy"
+                            className="text-gray-700 hover:text-blue-600 transition-colors"
+                        />
+                        <Link
+                            href="/legals#standard-form-of-agreement"
+                            label="Standard Form of Agreement"
+                            className="text-gray-700 hover:text-blue-600 transition-colors"
+                        />
+                    </div>
+                </div>
             </div>
 
-            <div className="mt-12 border-t border-black/30 pt-6 text-center">
+            <div className="mt-12 border-t border-black/30 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <Text variant="small" className="text-gray-800">
-                    © {new Date().getFullYear()} Flying Kiwi. All rights reserved.
+                    © {new Date().getFullYear()} Just Mobile. All rights reserved.
                 </Text>
+                <div className="flex items-center gap-4">
+                    <a href="/legals" className="text-xs text-gray-500 hover:text-purple-700 transition-colors">
+                        Legal &amp; Compliance
+                    </a>
+                    <a href="/legals#privacy-policy" className="text-xs text-gray-500 hover:text-purple-700 transition-colors">
+                        Privacy Policy
+                    </a>
+                    <a href="/legals#standard-form-of-agreement" className="text-xs text-gray-500 hover:text-purple-700 transition-colors">
+                        SFoA
+                    </a>
+                </div>
             </div>
         </footer>
     );
