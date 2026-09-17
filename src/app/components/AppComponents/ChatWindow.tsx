@@ -24,7 +24,7 @@ interface Plan {
 const ChatWindow = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { access_token: reduxToken } = useSelector((state: RootState) => state.login);
 
   const [chat, setChat] = useState<
@@ -100,23 +100,22 @@ const ChatWindow = () => {
     "new" | "existing" | null
   >(null);
 
-  // Auto-scroll to bottom whenever chat, loading, or any panel visibility changes
+  // Keep the scrollable chat panel pinned to the latest message,
+  // but avoid forcing the whole page to jump on every input change.
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [
-    chat,
-    loading,
-    showNumberButtons,
-    showPlans,
-    showDetailsForm,
-    showOtpInput,
-    showPayment,
-    showInitialOptions,
-    showExistingNumberOptions,
-    showNumberTypeSelection,
-    showConfirmNewNumber,
-    showConfirmExistingNumber,
-  ]);
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const shouldScroll =
+      container.scrollHeight - container.scrollTop - container.clientHeight < 80;
+
+    if (shouldScroll || chat.length > 0) {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [chat.length, loading]);
 
   useEffect(() => {
     if (!loading) {
@@ -1146,7 +1145,10 @@ const ChatWindow = () => {
         </header>
 
         {/* ── Scrollable message area ──────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto overscroll-contain scroll-smooth px-3 sm:px-5 md:px-8 py-4 space-y-1">
+        <div
+          ref={scrollContainerRef}
+          className="flex-1 overflow-y-auto overscroll-contain scroll-smooth px-3 sm:px-5 md:px-8 py-4 space-y-1"
+        >
           {/* Title */}
           <div className="text-center mb-4 mt-2">
             <h2 className="text-white font-semibold text-base sm:text-lg drop-shadow-sm">
@@ -1334,8 +1336,6 @@ const ChatWindow = () => {
             </div>
           )}
 
-          {/* Scroll anchor */}
-          <div ref={chatEndRef} />
         </div>
 
         {/* ── Bottom action panels ─────────────────────────────────────────── */}
