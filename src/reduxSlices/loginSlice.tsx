@@ -31,6 +31,7 @@ const loginSlice = createSlice({
     },
     logout: (state) => {
       state.access_token = null;
+      state.custNo = null;
       state.email = "";
       state.pin = "";
     },

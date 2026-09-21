@@ -371,17 +371,17 @@ export default function LegalsPage() {
             {
               icon: <Package size={28} className="text-blue-600 mb-2" />,
               label: "What's included",
-              sub: "Calls, SMS &amp; data allowances",
+              sub: "Calls, SMS & data allowances",
             },
             {
               icon: <CreditCard size={28} className="text-blue-600 mb-2" />,
               label: "What it costs",
-              sub: "Monthly fee, set-up &amp; excess charges",
+              sub: "Monthly fee, set-up & excess charges",
             },
             {
               icon: <Unlock size={28} className="text-blue-600 mb-2" />,
-              label: "Lock-in &amp; exit",
-              sub: "Contract length &amp; cancellation terms",
+              label: "Lock-in & exit",
+              sub: "Contract length & cancellation terms",
             },
             {
               icon: <MessageSquare size={28} className="text-blue-600 mb-2" />,

@@ -91,7 +91,7 @@ export default function SupportPlans() {
     <section className="py-20 px-4 bg-white text-center w-[95%] mx-auto">
       <Heading
         title="Choose Your Plan"
-        subtitle="All plans powered by JUSTmobile.ai with a portion supporting Flying Kiwi"
+        subtitle="Just Mobile is an independent MVNO. Customers referred by Flying Kiwi generate a 5% monthly commission for Flying Kiwi."
         align="center"
         level={2}
       />

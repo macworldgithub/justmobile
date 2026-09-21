@@ -3,16 +3,15 @@ import { Heading } from "../UIComponents/Heading";
 import { Text } from "../UIComponents/Text";
 import { Link } from "../UIComponents/Link";
 import { motion } from "framer-motion";
-import { Facebook, Twitter, Instagram } from "lucide-react";
 
 const Footer = () => {
     return (
         <footer className="w-full  text-black py-16 px-6 sm:px-10 md:px-16">
-            <div className="max-w-[1400px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12">
+            <div className="max-w-[1400px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
                 <div className="flex flex-col gap-4">
                     <motion.img
                         src="/images/logo.png"
-                        alt="Flying Kiwi Logo"
+                        alt="Just Mobile Logo"
                         className="w-40 sm:w-55"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -20,60 +19,14 @@ const Footer = () => {
                     />
 
                     <Text variant="muted" className="text-black leading-relaxed">
-                        Empowering communities through fitness, training, and events.
-                        Together, we soar higher with Flying Kiwi.
+                        Simple, reliable mobile plans from an independent MVNO owned by Bele AI.
                     </Text>
-
-                    <div className="flex items-center gap-4 mt-3">
-                        {[
-                            { icon: Facebook, href: "https://facebook.com" },
-                            { icon: Twitter, href: "https://twitter.com" },
-                            { icon: Instagram, href: "https://instagram.com" },
-                        ].map(({ icon: Icon, href }, i) => (
-                            <motion.a
-                                key={i}
-                                href={href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                whileHover={{ scale: 1.15 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-                            >
-                                <Icon size={20} />
-                            </motion.a>
-                        ))}
-                    </div>
                 </div>
 
                 <div className="flex flex-col">
-                    <Heading title="Quick Links" level={6} className="text-black mb-4" />
+                    <Heading title="Partners" level={6} className="text-black mb-4" />
                     <div className="flex flex-col gap-3">
-                        <Link href="/Program" label="Programs" className="text-gray-700 hover:text-blue-600 transition-colors" />
-                        <Link href="/About" label="About" className="text-gray-700 hover:text-blue-600 transition-colors" />
-                        <Link href="/Contact" label="Contact" className="text-gray-700 hover:text-blue-600 transition-colors" />
-                        <Link href="/support" label="Support" className="text-gray-700 hover:text-blue-600 transition-colors" />
-                    </div>
-                </div>
-
-                <div className="flex flex-col">
-                    <Heading title="Programs" level={6} className="text-black mb-4" />
-                    <div className="flex flex-col gap-3">
-                        <Link
-                            href=""
-                            label="Strong Hearts"
-                            className="text-gray-700 hover:text-blue-600 transition-colors"
-                        />
-                        <Link
-                            href=""
-                            label="Flying Kiwi Cup"
-                            className="text-gray-700 hover:text-blue-600 transition-colors"
-                        />
-                        <Link
-                            href=""
-                            label="Coaching"
-                            className="text-gray-700 hover:text-blue-600 transition-colors"
-                        />
-                        <Link href="" label="Events" className="text-gray-700" />
+                        <Link href="https://flyingkiwi.com.au/" label="Flying Kiwi" external className="text-gray-700 hover:text-blue-600 transition-colors" />
                     </div>
                 </div>
 
@@ -82,15 +35,11 @@ const Footer = () => {
                     <div className="flex flex-col gap-2">
                         <Text variant="muted">
                             <span className="font-semibold text-gray-700">Telephone:</span>{" "}
-                            0410 257 561
+                            1300 492 002
                         </Text>
                         <Text variant="muted">
                             <span className="font-semibold text-gray-700">Email:</span>{" "}
-                            support@flyingkiwi.com.au
-                        </Text>
-                        <Text variant="muted">
-                            <span className="font-semibold text-gray-700">Address:</span>{" "}
-                            Brisbane, Australia
+                            <a href="mailto:info@justmobile.ai" className="hover:text-blue-600 transition-colors">info@justmobile.ai</a>
                         </Text>
                     </div>
                 </div>
