@@ -8,7 +8,7 @@ const Footer = () => {
     return (
         <footer className="w-full  text-black py-16 px-6 sm:px-10 md:px-16">
             <div className="max-w-[1400px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col">
                     <motion.img
                         src="/images/logo.png"
                         alt="Just Mobile Logo"
@@ -18,9 +18,6 @@ const Footer = () => {
                         transition={{ duration: 0.4 }}
                     />
 
-                    <Text variant="muted" className="text-black leading-relaxed">
-                        Simple, reliable mobile plans from an independent MVNO owned by Bele AI.
-                    </Text>
                 </div>
 
                 <div className="flex flex-col">

@@ -1,7 +1,5 @@
 "use client";
 
-import { Heading } from "./components/UIComponents/Heading";
-import Small from "./components/AppComponents/Small";
 import Hero from "./components/AppComponents/Hero";
 import HowItWorks from "./components/AppComponents/Works";
 import Banner from "./components/AppComponents/Banner";
@@ -47,18 +45,15 @@ export default function Home() {
           },
         ]}
       />
-      {/* <Small /> */}
       <SupportPlans />
       <JustMobile
-        title="How It Works"
+        title="About the Service"
         circleImage="/images/bg.png"
         screenImage="/images/bannerscreen.png"
       />
       <Banner
         title="JUSTmobile uses the Telstra Wholesale Mobile Network."
         ctaText="Get Started"
-        appStoreLink="https://apps.apple.com/au/app/just-mobile/id1234567890"
-        googlePlayLink="https://play.google.com/store/apps/details?id=com.justmobile.app"
       />
     </div>
   );
